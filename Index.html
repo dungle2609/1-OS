@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1% OS — Tốt hơn 1% mỗi ngày</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============ TOKENS ============ */
+:root{
+  --bg:#F2F7FB;
+  --surface:#FFFFFF;
+  --surface-2:#F7FAFD;
+  --ink:#12263F;
+  --muted:#5B7089;
+  --line:#DEE9F2;
+  --navy:#0D2C54;
+  --blue:#1D6FE0;
+  --cyan:#12A9C2;
+  --cyan-soft:#E3F6FA;
+  --blue-soft:#E8F0FD;
+  --warn:#B45309;
+  --warn-soft:#FEF3E2;
+  --danger:#C0392B;
+  --ok:#0E8A6A;
+  --ok-soft:#E2F5EF;
+  --shadow:0 1px 2px rgba(13,44,84,.05),0 8px 24px rgba(13,44,84,.06);
+  --radius:16px;
+  --font-display:'Be Vietnam Pro',system-ui,sans-serif;
+  --font-body:'Inter',system-ui,sans-serif;
+}
+[data-theme="dark"]{
+  --bg:#0B1626;
+  --surface:#111F35;
+  --surface-2:#0E1A2E;
+  --ink:#E7F0F8;
+  --muted:#8AA3BD;
+  --line:#1E3252;
+  --navy:#DCE9F7;
+  --blue:#5D9BFF;
+  --cyan:#38C8DF;
+  --cyan-soft:#0E2A38;
+  --blue-soft:#14263F;
+  --warn:#F0B35C;
+  --warn-soft:#2B2210;
+  --danger:#F17C6E;
+  --ok:#4CC9A6;
+  --ok-soft:#0F2A24;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35);
+}
+
+/* ============ BASE ============ */
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font-body);
+  background:var(--bg);
+  color:var(--ink);
+  font-size:15px;
+  line-height:1.6;
+  min-height:100vh;
+}
+h1,h2,h3,h4{font-family:var(--font-display);color:var(--ink);line-height:1.3}
+button{font-family:inherit;cursor:pointer}
+input,textarea,select{
+  font-family:inherit;font-size:14px;color:var(--ink);
+  background:var(--surface-2);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:10px 12px;width:100%;
+  transition:border-color .15s, box-shadow .15s;
+}
+input:focus,textarea:focus,select:focus{
+  outline:none;border-color:var(--cyan);
+  box-shadow:0 0 0 3px color-mix(in srgb, var(--cyan) 20%, transparent);
+}
+textarea{resize:vertical;min-height:64px}
+label{display:block;font-size:13px;font-weight:600;margin-bottom:5px;color:var(--ink)}
+.hint{font-size:12.5px;color:var(--muted);margin-top:4px}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+@media (prefers-reduced-motion: reduce){
+  *{animation:none!important;transition:none!important}
+}
+
+/* ============ LAYOUT ============ */
+.app{display:flex;min-height:100vh}
+.sidebar{
+  width:224px;flex-shrink:0;
+  background:var(--surface);
+  border-right:1px solid var(--line);
+  padding:24px 14px;
+  display:flex;flex-direction:column;gap:4px;
+  position:sticky;top:0;height:100vh;
+}
+.logo{
+  display:flex;align-items:baseline;gap:6px;
+  padding:0 10px 22px;
+}
+.logo .pct{
+  font-family:var(--font-display);font-weight:800;font-size:26px;
+  background:linear-gradient(120deg,var(--blue),var(--cyan));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.logo .os{font-family:var(--font-display);font-weight:600;font-size:15px;color:var(--muted);letter-spacing:.14em}
+.nav-btn{
+  display:flex;align-items:center;gap:10px;
+  width:100%;text-align:left;
+  background:none;border:none;border-radius:10px;
+  padding:10px 12px;font-size:14px;font-weight:500;color:var(--muted);
+  transition:background .15s,color .15s;
+}
+.nav-btn:hover{background:var(--surface-2);color:var(--ink)}
+.nav-btn.active{background:var(--blue-soft);color:var(--blue);font-weight:600}
+.nav-btn .ico{width:18px;text-align:center;font-size:15px}
+.sidebar-foot{margin-top:auto;padding:10px}
+.theme-toggle{
+  width:100%;background:var(--surface-2);border:1px solid var(--line);
+  border-radius:10px;padding:8px;font-size:13px;color:var(--muted);
+}
+.main{flex:1;min-width:0;padding:32px 40px 96px;max-width:920px;margin:0 auto}
+section[data-view]{display:none}
+section[data-view].active{display:block;animation:fadein .25s ease}
+@keyframes fadein{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* ============ CARDS & COMMON ============ */
+.card{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:22px;
+  margin-bottom:18px;
+}
+.page-head{margin-bottom:22px}
+.page-head h1{font-size:24px;font-weight:700}
+.page-head .sub{color:var(--muted);font-size:14px;margin-top:4px}
+.eyebrow{font-size:11.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--cyan)}
+.btn{
+  border:none;border-radius:10px;padding:10px 16px;
+  font-size:14px;font-weight:600;
+  transition:transform .1s, filter .15s;
+  display:inline-flex;align-items:center;gap:7px;
+}
+.btn:active{transform:scale(.98)}
+.btn-primary{background:var(--blue);color:#fff}
+.btn-primary:hover{filter:brightness(1.08)}
+.btn-ghost{background:transparent;color:var(--blue);border:1px solid var(--line)}
+.btn-ghost:hover{background:var(--blue-soft)}
+.btn-soft{background:var(--blue-soft);color:var(--blue)}
+.btn-danger{background:transparent;color:var(--danger);border:1px solid var(--line)}
+.btn-danger:hover{background:color-mix(in srgb,var(--danger) 8%,transparent)}
+.btn-sm{padding:6px 11px;font-size:12.5px;border-radius:8px}
+.chip{
+  display:inline-block;font-size:11.5px;font-weight:600;
+  padding:3px 9px;border-radius:99px;
+  background:var(--surface-2);color:var(--muted);border:1px solid var(--line);
+}
+.chip-cat{background:var(--cyan-soft);color:var(--cyan);border-color:transparent}
+.quote{
+  border-left:3px solid var(--cyan);
+  padding:8px 14px;color:var(--muted);
+  font-size:13.5px;font-style:italic;
+  background:var(--surface-2);border-radius:0 10px 10px 0;
+}
+.empty{
+  text-align:center;color:var(--muted);
+  padding:34px 18px;font-size:14px;
+  border:1.5px dashed var(--line);border-radius:var(--radius);
+}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.spread{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+
+/* ============ TODAY ============ */
+.hero{
+  background:linear-gradient(135deg,var(--navy) 0%, #123B72 55%, #0F5F79 100%);
+  color:#EAF4FB;border:none;
+  display:flex;gap:26px;align-items:center;flex-wrap:wrap;
+}
+[data-theme="dark"] .hero{background:linear-gradient(135deg,#12345F 0%, #0F2A4C 55%, #0C3F50 100%)}
+.hero h1{color:#fff;font-size:22px;font-weight:700;margin:2px 0 6px}
+.hero .date{font-size:12.5px;letter-spacing:.1em;text-transform:uppercase;color:#9FC5E8;font-weight:600}
+.hero .ask{color:#C9E2F5;font-size:14px}
+.hero-left{flex:1;min-width:230px}
+.loop{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px}
+.loop span{
+  font-size:11px;font-weight:600;letter-spacing:.05em;
+  padding:4px 9px;border-radius:99px;
+  background:rgba(255,255,255,.1);color:#BFE3F2;
+  border:1px solid rgba(255,255,255,.14);
+}
+.ring-wrap{display:flex;flex-direction:column;align-items:center;gap:6px}
+.ring{position:relative;width:118px;height:118px}
+.ring svg{transform:rotate(-90deg)}
+.ring .center{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+}
+.ring .center .big{font-family:var(--font-display);font-weight:800;font-size:26px;color:#fff;line-height:1}
+.ring .center .small{font-size:10.5px;color:#9FC5E8;margin-top:3px;font-weight:600;letter-spacing:.06em}
+.ring-cap{font-size:11.5px;color:#9FC5E8;text-align:center;max-width:150px;line-height:1.45}
+
+.focus-row{display:flex;gap:10px}
+.focus-row input{flex:1}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+.stat{
+  background:var(--surface);border:1px solid var(--line);
+  border-radius:14px;padding:14px 16px;box-shadow:var(--shadow);
+}
+.stat .num{font-family:var(--font-display);font-weight:800;font-size:24px;color:var(--blue)}
+.stat .lbl{font-size:12px;color:var(--muted);font-weight:500;margin-top:2px}
+
+.act-card{
+  background:var(--surface);border:1px solid var(--line);
+  border-radius:14px;padding:16px 18px;margin-bottom:12px;box-shadow:var(--shadow);
+}
+.act-card h3{font-size:15.5px;font-weight:700}
+.act-meta{font-size:13px;color:var(--muted);margin-top:6px}
+.act-meta b{color:var(--ink);font-weight:600}
+.status-seg{display:inline-flex;background:var(--surface-2);border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.status-seg button{
+  border:none;background:none;padding:5px 10px;font-size:12px;font-weight:600;color:var(--muted);
+}
+.status-seg button.on[data-s="todo"]{background:var(--line);color:var(--ink)}
+.status-seg button.on[data-s="doing"]{background:var(--blue-soft);color:var(--blue)}
+.status-seg button.on[data-s="done"]{background:var(--ok-soft);color:var(--ok)}
+.status-seg button.on[data-s="skipped"]{background:var(--warn-soft);color:var(--warn)}
+.review-snippet{
+  margin-top:12px;background:var(--surface-2);
+  border:1px solid var(--line);border-radius:10px;padding:10px 13px;font-size:13px;
+}
+.review-snippet .rl{font-weight:600;color:var(--cyan);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+
+.action-item{
+  display:flex;gap:12px;align-items:flex-start;
+  background:var(--surface);border:1px solid var(--line);
+  border-radius:13px;padding:14px 16px;margin-bottom:10px;box-shadow:var(--shadow);
+}
+.action-item.done{opacity:.62}
+.action-item.done .a-content{text-decoration:line-through}
+.a-check{
+  width:22px;height:22px;flex-shrink:0;margin-top:2px;
+  border:2px solid var(--line);border-radius:7px;background:var(--surface-2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;color:#fff;transition:all .15s;
+}
+.a-check.on{background:var(--ok);border-color:var(--ok)}
+.a-body{flex:1;min-width:0}
+.a-content{font-size:14px;font-weight:500}
+.a-meta{font-size:12px;color:var(--muted);margin-top:4px}
+.a-evi{font-size:12.5px;color:var(--cyan);margin-top:3px}
+.a-btns{display:flex;gap:6px;flex-shrink:0}
+
+/* ============ MISTAKES ============ */
+.mist-card{
+  background:var(--surface);border:1px solid var(--line);
+  border-radius:13px;padding:15px 17px;margin-bottom:11px;box-shadow:var(--shadow);
+}
+.mist-card .m-content{font-weight:600;font-size:14.5px}
+.m-field{font-size:13px;color:var(--muted);margin-top:5px}
+.m-field b{color:var(--ink);font-weight:600}
+.pattern-alert{
+  background:var(--warn-soft);border:1px solid color-mix(in srgb,var(--warn) 35%,transparent);
+  color:var(--warn);border-radius:12px;padding:12px 15px;
+  font-size:13.5px;margin-bottom:14px;display:flex;gap:9px;align-items:flex-start;
+}
+.filter-row{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px}
+.filter-row button{
+  border:1px solid var(--line);background:var(--surface);
+  border-radius:99px;padding:5px 13px;font-size:12.5px;font-weight:500;color:var(--muted);
+}
+.filter-row button.on{background:var(--navy);border-color:var(--navy);color:#fff}
+[data-theme="dark"] .filter-row button.on{background:var(--blue);border-color:var(--blue);color:#08131F}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:7px;font-size:13px}
+.bar-row .bl{width:110px;flex-shrink:0;color:var(--muted);font-weight:500}
+.bar-track{flex:1;height:8px;background:var(--surface-2);border-radius:99px;overflow:hidden}
+.bar-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--cyan));border-radius:99px}
+.bar-row .bn{width:26px;text-align:right;font-weight:600;font-size:12.5px}
+
+/* ============ MODAL & TOAST ============ */
+.modal-back{
+  position:fixed;inset:0;background:rgba(9,22,40,.45);
+  display:none;align-items:flex-start;justify-content:center;
+  padding:5vh 16px;z-index:50;overflow-y:auto;backdrop-filter:blur(2px);
+}
+.modal-back.open{display:flex}
+.modal{
+  background:var(--surface);border-radius:18px;box-shadow:var(--shadow);
+  width:100%;max-width:560px;padding:26px;margin-bottom:5vh;
+  animation:fadein .2s ease;
+}
+.modal h2{font-size:18px;margin-bottom:4px}
+.modal .m-sub{font-size:13px;color:var(--muted);margin-bottom:18px}
+.f-group{margin-bottom:14px}
+.toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(8px);
+  background:var(--navy);color:#fff;padding:11px 20px;border-radius:12px;
+  font-size:13.5px;font-weight:500;box-shadow:var(--shadow);
+  opacity:0;pointer-events:none;transition:all .25s;z-index:99;max-width:90vw;text-align:center;
+}
+[data-theme="dark"] .toast{background:var(--blue);color:#08131F}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ============ WEEKLY ============ */
+.week-block{margin-bottom:14px}
+.week-block .wq{font-size:13px;font-weight:700;color:var(--cyan);letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px}
+.week-block .wa{font-size:14px}
+.week-block ul{padding-left:18px}
+.week-saved{border-top:1px solid var(--line);padding-top:14px;margin-top:14px}
+
+/* ============ MOBILE ============ */
+@media (max-width:760px){
+  .app{flex-direction:column}
+  .sidebar{
+    width:100%;height:auto;position:fixed;bottom:0;top:auto;z-index:40;
+    flex-direction:row;padding:6px 8px;gap:2px;
+    border-right:none;border-top:1px solid var(--line);
+    overflow-x:auto;
+  }
+  .logo,.sidebar-foot{display:none}
+  .nav-btn{flex-direction:column;gap:3px;padding:7px 9px;font-size:10.5px;flex-shrink:0;min-width:62px;justify-content:center;text-align:center}
+  .nav-btn .ico{font-size:17px}
+  .main{padding:20px 16px 110px}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .grid-2{grid-template-columns:1fr}
+  .hero{gap:16px}
+  .theme-fab{
+    display:flex!important;position:fixed;top:14px;right:14px;z-index:41;
+    width:38px;height:38px;border-radius:99px;align-items:center;justify-content:center;
+    background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow);font-size:16px;
+  }
+}
+.theme-fab{display:none;border:none}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- ============ NAV ============ -->
+  <nav class="sidebar">
+    <div class="logo"><span class="pct">1%</span><span class="os">OS</span></div>
+    <button class="nav-btn active" data-nav="today"><span class="ico">☀️</span>Hôm nay</button>
+    <button class="nav-btn" data-nav="add"><span class="ico">＋</span>Thêm hoạt động</button>
+    <button class="nav-btn" data-nav="actions"><span class="ico">⚡</span>1% Actions</button>
+    <button class="nav-btn" data-nav="mistakes"><span class="ico">📚</span>Mistake Library</button>
+    <button class="nav-btn" data-nav="weekly"><span class="ico">🗓️</span>Weekly Review</button>
+    <button class="nav-btn" data-nav="data"><span class="ico">💾</span>Dữ liệu</button>
+    <div class="sidebar-foot">
+      <button class="theme-toggle" id="themeToggle">🌙 Chế độ tối</button>
+    </div>
+  </nav>
+  <button class="theme-fab" id="themeFab" aria-label="Đổi giao diện sáng tối">🌙</button>
+
+  <main class="main">
+
+    <!-- ============ TODAY ============ -->
+    <section data-view="today" class="active">
+      <div class="card hero">
+        <div class="hero-left">
+          <div class="date" id="todayDate"></div>
+          <h1>Hôm nay bạn muốn tốt hơn 1% ở điểm nào?</h1>
+          <p class="ask">Lỗi sai hôm nay không phải để tự trách, mà là dữ liệu huấn luyện cho ngày mai.</p>
+          <div class="loop">
+            <span>Plan</span><span>→</span><span>Do</span><span>→</span><span>Review</span><span>→</span><span>Learn</span><span>→</span><span>Improve</span>
+          </div>
+        </div>
+        <div class="ring-wrap">
+          <div class="ring">
+            <svg width="118" height="118" viewBox="0 0 118 118">
+              <circle cx="59" cy="59" r="52" fill="none" stroke="rgba(255,255,255,.13)" stroke-width="9"/>
+              <circle id="streakRing" cx="59" cy="59" r="52" fill="none" stroke="url(#rg)" stroke-width="9" stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="326.7"/>
+              <defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#4DA3FF"/><stop offset="100%" stop-color="#3EE0F0"/>
+              </linearGradient></defs>
+            </svg>
+            <div class="center"><div class="big" id="streakNum">0</div><div class="small">NGÀY STREAK</div></div>
+          </div>
+          <div class="ring-cap" id="compoundCap">+1% mỗi ngày ≈ ×37,8 sau một năm</div>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><div class="num" id="stDone">0</div><div class="lbl">Hoạt động đã hoàn thành</div></div>
+        <div class="stat"><div class="num" id="stReviews">0</div><div class="lbl">Review đã ghi hôm nay</div></div>
+        <div class="stat"><div class="num" id="stActions">0</div><div class="lbl">Hành động 1% đã tạo</div></div>
+        <div class="stat"><div class="num" id="stStreak">0</div><div class="lbl">Review streak</div></div>
+      </div>
+
+      <div class="card">
+        <label for="focusInput">Today’s Focus</label>
+        <div class="focus-row">
+          <input id="focusInput" placeholder="Hôm nay mình tập trung tốt hơn 1% ở điều gì?">
+          <button class="btn btn-primary" id="focusSave">Lưu</button>
+        </div>
+        <p class="hint">Chỉ một điều. Nhỏ, cụ thể, quan sát được.</p>
+      </div>
+
+      <div class="spread" style="margin-bottom:12px">
+        <h2 style="font-size:17px">Hoạt động hôm nay</h2>
+        <button class="btn btn-soft btn-sm" data-nav-go="add">＋ Thêm hoạt động</button>
+      </div>
+      <div id="todayActivities"></div>
+
+      <div class="spread" style="margin:26px 0 12px">
+        <h2 style="font-size:17px">Hành động 1% hôm nay</h2>
+        <button class="btn btn-ghost btn-sm" data-nav-go="actions">Xem tất cả</button>
+      </div>
+      <div id="todayActions"></div>
+      <p class="quote" style="margin-top:16px">Đừng chỉ ghi chép. Hãy biến bài học thành hành vi.</p>
+    </section>
+
+    <!-- ============ ADD ACTIVITY ============ -->
+    <section data-view="add">
+      <div class="page-head">
+        <div class="eyebrow">Plan</div>
+        <h1>Thêm hoạt động</h1>
+        <p class="sub">Định nghĩa trước thế nào là “làm tốt” — để buổi review có thước đo rõ ràng.</p>
+      </div>
+      <div class="card">
+        <form id="addForm">
+          <div class="f-group">
+            <label for="fTitle">Tên hoạt động *</label>
+            <input id="fTitle" required placeholder="VD: Chuẩn bị proposal cho khách hàng">
+          </div>
+          <div class="f-group">
+            <label for="fGoal">Mục tiêu mong muốn</label>
+            <textarea id="fGoal" placeholder="Kết quả bạn muốn đạt được là gì?"></textarea>
+          </div>
+          <div class="f-group">
+            <label for="fCriteria">Tiêu chuẩn làm tốt</label>
+            <textarea id="fCriteria" placeholder="Làm thế nào để biết bạn đã làm tốt?"></textarea>
+          </div>
+          <div class="f-group">
+            <label for="fCategory">Nhóm hoạt động</label>
+            <select id="fCategory"></select>
+          </div>
+          <button class="btn btn-primary" type="submit">Thêm vào hôm nay</button>
+        </form>
+      </div>
+      <p class="quote">Bạn không cần hoàn hảo. Bạn chỉ cần quan sát tốt hơn và điều chỉnh nhanh hơn.</p>
+    </section>
+
+    <!-- ============ 1% ACTIONS ============ -->
+    <section data-view="actions">
+      <div class="page-head">
+        <div class="eyebrow">Improve</div>
+        <h1>Tomorrow’s 1% Actions</h1>
+        <p class="sub">Khi [tình huống] xảy ra, tôi sẽ [hành động cụ thể], để tạo ra [bằng chứng cải thiện].</p>
+      </div>
+      <p class="quote" style="margin-bottom:18px">Đừng cố thay đổi cả con người. Chỉ cần thay đổi một hành vi nhỏ trong một tình huống cụ thể.</p>
+      <div class="card">
+        <label for="manualAction">Thêm nhanh một hành động 1%</label>
+        <div class="focus-row">
+          <input id="manualAction" placeholder="Khi... xảy ra, tôi sẽ... để tạo ra...">
+          <button class="btn btn-primary" id="manualActionAdd">Thêm</button>
+        </div>
+      </div>
+      <h3 style="font-size:15px;margin:6px 0 12px">Đang chờ thực hiện</h3>
+      <div id="pendingActions"></div>
+      <h3 style="font-size:15px;margin:22px 0 12px">Đã hoàn thành</h3>
+      <div id="doneActions"></div>
+    </section>
+
+    <!-- ============ MISTAKE LIBRARY ============ -->
+    <section data-view="mistakes">
+      <div class="page-head">
+        <div class="eyebrow">Learn</div>
+        <h1>Mistake Library</h1>
+        <p class="sub">Thư viện pattern cá nhân. Một lỗi lặp lại 3 lần có thể là dấu hiệu của một hệ thống chưa phù hợp.</p>
+      </div>
+      <div id="patternAlerts"></div>
+      <div class="card">
+        <h3 style="font-size:15px;margin-bottom:12px">Thống kê</h3>
+        <div id="mistakeStats"></div>
+      </div>
+      <div class="filter-row" id="mistakeFilters"></div>
+      <div id="mistakeList"></div>
+    </section>
+
+    <!-- ============ WEEKLY REVIEW ============ -->
+    <section data-view="weekly">
+      <div class="page-head">
+        <div class="eyebrow">Reflect</div>
+        <h1>Weekly Review</h1>
+        <p class="sub">Nhìn lại 7 ngày gần nhất — mỗi review nên tạo ra ít nhất một hành động nhỏ cho ngày mai.</p>
+      </div>
+      <div class="card">
+        <div class="spread">
+          <div>
+            <h3 style="font-size:15.5px">Tổng kết tuần tự động</h3>
+            <p class="hint">Được tạo từ dữ liệu 7 ngày gần nhất của bạn.</p>
+          </div>
+          <button class="btn btn-primary" id="genWeekly">✦ Generate Weekly Reflection</button>
+        </div>
+        <div id="weeklyOutput" style="margin-top:18px"></div>
+      </div>
+      <div class="card">
+        <h3 style="font-size:15.5px;margin-bottom:12px">Các tổng kết đã lưu</h3>
+        <div id="weeklySaved"></div>
+      </div>
+    </section>
+
+    <!-- ============ DATA ============ -->
+    <section data-view="data">
+      <div class="page-head">
+        <div class="eyebrow">System</div>
+        <h1>Dữ liệu</h1>
+        <p class="sub">Toàn bộ dữ liệu được lưu trên trình duyệt của bạn (localStorage). Không có máy chủ, không có tài khoản.</p>
+      </div>
+      <div class="card">
+        <div class="row" style="gap:12px">
+          <button class="btn btn-primary" id="exportBtn">⬇ Export JSON</button>
+          <button class="btn btn-ghost" id="importBtn">⬆ Import JSON</button>
+          <input type="file" id="importFile" accept=".json,application/json" style="display:none">
+        </div>
+        <p class="hint" style="margin-top:10px">Export định kỳ để sao lưu. Import sẽ thay thế toàn bộ dữ liệu hiện tại.</p>
+      </div>
+      <div class="card">
+        <h3 style="font-size:15px;margin-bottom:8px;color:var(--danger)">Vùng nguy hiểm</h3>
+        <p class="hint" style="margin-bottom:12px">Xoá toàn bộ hoạt động, review, hành động 1% và mistake library.</p>
+        <button class="btn btn-danger" id="resetBtn">Xoá toàn bộ dữ liệu</button>
+      </div>
+      <div class="card">
+        <div id="dataSummary" class="hint"></div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ============ REVIEW MODAL ============ -->
+<div class="modal-back" id="reviewModal">
+  <div class="modal" role="dialog" aria-modal="true">
+    <h2 id="rvTitle">Review hoạt động</h2>
+    <p class="m-sub">Ngày mai mình sẽ làm khác đi điều gì?</p>
+    <form id="reviewForm">
+      <div class="f-group"><label>1. Tôi đã làm tốt điều gì?</label><textarea id="rDidWell"></textarea></div>
+      <div class="f-group"><label>2. Tôi chưa làm tốt điều gì?</label><textarea id="rDidNot"></textarea>
+        <p class="hint">Điền mục này sẽ tự động lưu vào Mistake Library.</p></div>
+      <div class="f-group"><label>Nhóm lỗi (nếu có điểm chưa tốt)</label><select id="rMistakeCat"></select></div>
+      <div class="f-group"><label>3. Vì sao điều đó xảy ra?</label><textarea id="rCause"></textarea></div>
+      <div class="f-group"><label>4. Bài học rút ra là gì?</label><textarea id="rLesson"></textarea></div>
+      <div class="f-group"><label>5. Ngày mai tôi sẽ cải thiện 1% bằng hành động nào?</label>
+        <textarea id="rAction" placeholder="Khi... xảy ra, tôi sẽ... để tạo ra..."></textarea>
+        <p class="hint">Hành động này sẽ tự động vào danh sách 1% Actions của ngày mai.</p></div>
+      <div class="f-group"><label>6. Bằng chứng nào cho thấy tôi đã cải thiện?</label><textarea id="rEvidence"></textarea></div>
+      <div class="row" style="justify-content:flex-end">
+        <button type="button" class="btn btn-ghost" data-close>Huỷ</button>
+        <button type="submit" class="btn btn-primary">Lưu review</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ============ EDIT ACTIVITY MODAL ============ -->
+<div class="modal-back" id="editModal">
+  <div class="modal" role="dialog" aria-modal="true">
+    <h2>Sửa hoạt động</h2>
+    <p class="m-sub">Cập nhật lại mục tiêu hoặc tiêu chuẩn làm tốt.</p>
+    <form id="editForm">
+      <div class="f-group"><label>Tên hoạt động *</label><input id="eTitle" required></div>
+      <div class="f-group"><label>Mục tiêu mong muốn</label><textarea id="eGoal"></textarea></div>
+      <div class="f-group"><label>Tiêu chuẩn làm tốt</label><textarea id="eCriteria"></textarea></div>
+      <div class="f-group"><label>Nhóm hoạt động</label><select id="eCategory"></select></div>
+      <div class="row" style="justify-content:flex-end">
+        <button type="button" class="btn btn-ghost" data-close>Huỷ</button>
+        <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* =====================================================
+   1% OS — single-file personal improvement system
+   Data: localStorage only. No backend, no account.
+   ===================================================== */
+
+// ---------- Constants ----------
+const LS_KEY = 'onePercentOS_v1';
+const ACTIVITY_CATS = ['Công việc','Học tập','Sức khỏe','Gia đình','Tài chính','Kỹ năng','Billiards','Tinh thần','Khác'];
+const MISTAKE_CATS = ['Tư duy','Giao tiếp','Kỷ luật','Công việc','Cảm xúc','Sức khỏe','Kỹ năng','Hệ thống cá nhân','Khác'];
+const STATUS_LABEL = {todo:'Chưa làm',doing:'Đang làm',done:'Đã làm',skipped:'Bỏ qua'};
+const FOCUS_SUGGEST = {
+  'Tư duy':'Chậm lại một nhịp trước khi kết luận: viết ra giả định trước khi quyết định.',
+  'Giao tiếp':'Trước mỗi cuộc trao đổi quan trọng, viết trước 1 câu key message bạn muốn người nghe nhớ.',
+  'Kỷ luật':'Thiết kế lại môi trường: giảm ma sát cho việc nên làm, tăng ma sát cho việc gây xao nhãng.',
+  'Công việc':'Chia nhỏ đầu việc và định nghĩa “xong” rõ ràng trước khi bắt đầu.',
+  'Cảm xúc':'Khi cảm xúc mạnh xuất hiện, gọi tên nó trước khi phản ứng (name it to tame it).',
+  'Sức khỏe':'Gắn một thói quen sức khỏe nhỏ vào một thói quen đã có sẵn (habit stacking).',
+  'Kỹ năng':'Luyện có chủ đích: chọn 1 kỹ năng con nhỏ nhất và lặp lại với phản hồi.',
+  'Hệ thống cá nhân':'Đừng sửa bản thân, hãy sửa quy trình: viết checklist cho tình huống hay sai.',
+  'Khác':'Chọn một hành vi nhỏ, một tình huống cụ thể, và một bằng chứng quan sát được.'
+};
+
+// ---------- Date helpers ----------
+const todayStr = () => {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+};
+const addDays = (str, n) => {
+  const [y,m,d] = str.split('-').map(Number);
+  const dt = new Date(y, m-1, d + n);
+  return `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`;
+};
+const fmtDate = (str) => {
+  const [y,m,d] = str.split('-').map(Number);
+  const days = ['Chủ nhật','Thứ hai','Thứ ba','Thứ tư','Thứ năm','Thứ sáu','Thứ bảy'];
+  const dt = new Date(y, m-1, d);
+  return `${days[dt.getDay()]}, ${d}/${m}/${y}`;
+};
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+// ---------- State ----------
+let state = null;
+
+function defaultState(){
+  return { activities:[], reviews:[], actions:[], mistakes:[], focus:{}, weekly:[], seeded:false, theme:'light' };
+}
+
+function load(){
+  try{
+    const raw = localStorage.getItem(LS_KEY);
+    state = raw ? Object.assign(defaultState(), JSON.parse(raw)) : defaultState();
+  }catch(e){ state = defaultState(); }
+  if(!state.seeded){ seedDemo(); state.seeded = true; save(); }
+}
+function save(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); }
+
+// ---------- Demo data (first run) ----------
+function seedDemo(){
+  const t = todayStr();
+  const actId = uid(), revId = uid(), a1 = uid(), m1 = uid();
+  state.activities.push({
+    id:actId, date:t,
+    title:'Chuẩn bị proposal cho khách hàng',
+    goal:'Tạo proposal rõ insight, ít chữ, có key message mạnh',
+    successCriteria:'Mỗi slide chỉ có một thông điệp chính',
+    category:'Công việc', status:'done', reviewId:revId
+  });
+  state.reviews.push({
+    id:revId, activityId:actId, date:t,
+    didWell:'Có cấu trúc rõ hơn hôm trước',
+    didNotDoWell:'Vẫn đưa quá nhiều nội dung vào một slide',
+    rootCause:'Sợ thiếu thông tin, chưa dám cắt bỏ',
+    lesson:'Slide tốt không phải là slide chứa nhiều thông tin, mà là slide giúp người nghe hiểu đúng một ý chính',
+    onePercentAction:'Trước khi thiết kế mỗi slide, tôi sẽ viết một câu: “Người xem cần nhớ điều gì sau slide này?”',
+    evidence:'Mỗi slide có một key message rõ ràng',
+    mistakeCategory:'Công việc'
+  });
+  state.actions.push({
+    id:a1, sourceReviewId:revId, sourceActivityTitle:'Chuẩn bị proposal cho khách hàng',
+    dateCreated:t, targetDate:addDays(t,1),
+    content:'Trước khi thiết kế mỗi slide, tôi sẽ viết một câu: “Người xem cần nhớ điều gì sau slide này?”',
+    evidence:'Mỗi slide có một key message rõ ràng', status:'pending'
+  });
+  state.mistakes.push({
+    id:m1, reviewId:revId, activityTitle:'Chuẩn bị proposal cho khách hàng', date:t,
+    category:'Công việc',
+    content:'Vẫn đưa quá nhiều nội dung vào một slide',
+    rootCause:'Sợ thiếu thông tin, chưa dám cắt bỏ',
+    lesson:'Slide tốt không phải là slide chứa nhiều thông tin, mà là slide giúp người nghe hiểu đúng một ý chính',
+    action:'Trước khi thiết kế mỗi slide, tôi sẽ viết một câu: “Người xem cần nhớ điều gì sau slide này?”'
+  });
+  state.activities.push({
+    id:uid(), date:t,
+    title:'Tập trung 25 phút không điện thoại',
+    goal:'Hoàn thành 1 phiên deep work',
+    successCriteria:'Điện thoại để phòng khác trong suốt 25 phút',
+    category:'Kỹ năng', status:'todo', reviewId:null
+  });
+}
+
+// ---------- Toast ----------
+let toastTimer;
+function toast(msg){
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=> el.classList.remove('show'), 2600);
+}
+
+// ---------- Navigation ----------
+function go(view){
+  document.querySelectorAll('section[data-view]').forEach(s => s.classList.toggle('active', s.dataset.view === view));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.nav === view));
+  renderAll();
+  window.scrollTo({top:0});
+}
+document.querySelectorAll('.nav-btn').forEach(b => b.addEventListener('click', () => go(b.dataset.nav)));
+document.addEventListener('click', e => {
+  const g = e.target.closest('[data-nav-go]');
+  if(g) go(g.dataset.navGo);
+});
+
+// ---------- Theme ----------
+function applyTheme(){
+  document.documentElement.dataset.theme = state.theme;
+  const label = state.theme === 'dark' ? '☀️ Chế độ sáng' : '🌙 Chế độ tối';
+  document.getElementById('themeToggle').textContent = label;
+  document.getElementById('themeFab').textContent = state.theme === 'dark' ? '☀️' : '🌙';
+}
+['themeToggle','themeFab'].forEach(id =>
+  document.getElementById(id).addEventListener('click', () => {
+    state.theme = state.theme === 'dark' ? 'light' : 'dark';
+    save(); applyTheme();
+  })
+);
+
+// ---------- Streak ----------
+function reviewStreak(){
+  const dates = new Set(state.reviews.map(r => r.date));
+  let d = todayStr();
+  if(!dates.has(d)) d = addDays(d,-1);
+  let n = 0;
+  while(dates.has(d)){ n++; d = addDays(d,-1); }
+  return n;
+}
+
+// ---------- Renders ----------
+function renderAll(){
+  renderToday(); renderActions(); renderMistakes(); renderWeeklySaved(); renderDataSummary();
+}
+
+function renderToday(){
+  const t = todayStr();
+  document.getElementById('todayDate').textContent = fmtDate(t);
+
+  // stats
+  const acts = state.activities.filter(a => a.date === t);
+  const done = acts.filter(a => a.status === 'done').length;
+  const revsToday = state.reviews.filter(r => r.date === t).length;
+  const actionsCreated = state.actions.filter(a => a.dateCreated === t).length;
+  const streak = reviewStreak();
+  document.getElementById('stDone').textContent = done;
+  document.getElementById('stReviews').textContent = revsToday;
+  document.getElementById('stActions').textContent = actionsCreated;
+  document.getElementById('stStreak').textContent = streak;
+  document.getElementById('streakNum').textContent = streak;
+  const pct = Math.min(streak % 7 === 0 && streak > 0 ? 7 : streak % 7, 7) / 7;
+  document.getElementById('streakRing').style.strokeDashoffset = 326.7 * (1 - pct);
+  const gain = Math.pow(1.01, Math.max(streak,1));
+  document.getElementById('compoundCap').textContent =
+    streak > 1 ? `+1% mỗi ngày × ${streak} ngày ≈ tốt hơn ${((gain-1)*100).toFixed(1)}%` : '+1% mỗi ngày ≈ ×37,8 sau một năm';
+
+  // focus
+  document.getElementById('focusInput').value = state.focus[t] || '';
+
+  // activities
+  const wrap = document.getElementById('todayActivities');
+  if(!acts.length){
+    wrap.innerHTML = `<div class="empty">Chưa có hoạt động nào hôm nay.<br>Một ngày tốt bắt đầu từ một kế hoạch nhỏ — thêm hoạt động đầu tiên nhé.</div>`;
+  }else{
+    wrap.innerHTML = acts.map(a => {
+      const rv = state.reviews.find(r => r.id === a.reviewId);
+      return `<div class="act-card" data-id="${a.id}">
+        <div class="spread">
+          <div style="min-width:0">
+            <div class="row" style="gap:8px;margin-bottom:4px">
+              <span class="chip chip-cat">${esc(a.category)}</span>
+              ${rv ? '<span class="chip" style="background:var(--ok-soft);color:var(--ok);border-color:transparent">Đã review</span>' : ''}
+            </div>
+            <h3>${esc(a.title)}</h3>
+            ${a.goal ? `<div class="act-meta"><b>Mục tiêu:</b> ${esc(a.goal)}</div>` : ''}
+            ${a.successCriteria ? `<div class="act-meta"><b>Tiêu chuẩn làm tốt:</b> ${esc(a.successCriteria)}</div>` : ''}
+          </div>
+        </div>
+        <div class="spread" style="margin-top:12px">
+          <div class="status-seg" role="group" aria-label="Trạng thái">
+            ${Object.keys(STATUS_LABEL).map(s =>
+              `<button type="button" data-status="${s}" data-s="${s}" class="${a.status===s?'on':''}">${STATUS_LABEL[s]}</button>`).join('')}
+          </div>
+          <div class="row" style="gap:6px">
+            <button class="btn btn-soft btn-sm" data-review>✎ ${rv ? 'Xem / sửa review' : 'Review'}</button>
+            <button class="btn btn-ghost btn-sm" data-edit>Sửa</button>
+            <button class="btn btn-danger btn-sm" data-del>Xoá</button>
+          </div>
+        </div>
+        ${rv && rv.lesson ? `<div class="review-snippet"><div class="rl">Bài học</div>${esc(rv.lesson)}</div>` : ''}
+      </div>`;
+    }).join('');
+  }
+
+  // today's 1% actions
+  const tw = document.getElementById('todayActions');
+  const list = state.actions.filter(a => (a.status === 'pending' && a.targetDate <= t) || (a.status === 'done' && a.targetDate === t));
+  tw.innerHTML = list.length ? list.map(actionHTML).join('')
+    : `<div class="empty">Chưa có hành động 1% cho hôm nay.<br>Mỗi review nên tạo ra ít nhất một hành động nhỏ cho ngày mai.</div>`;
+}
+
+function actionHTML(a){
+  const t = todayStr();
+  const late = a.status === 'pending' && a.targetDate < t;
+  return `<div class="action-item ${a.status==='done'?'done':''}" data-aid="${a.id}">
+    <button class="a-check ${a.status==='done'?'on':''}" data-toggle aria-label="Đánh dấu hoàn thành">${a.status==='done'?'✓':''}</button>
+    <div class="a-body">
+      <div class="a-content">${esc(a.content)}</div>
+      <div class="a-meta">
+        ${a.sourceActivityTitle ? `Từ review: <b>${esc(a.sourceActivityTitle)}</b> · ` : 'Thêm thủ công · '}
+        Tạo ${a.dateCreated.split('-').reverse().join('/')} · Hạn ${a.targetDate.split('-').reverse().join('/')}
+        ${late ? ' · <span style="color:var(--warn);font-weight:600">quá hạn</span>' : ''}
+      </div>
+      ${a.evidence ? `<div class="a-evi">Bằng chứng cải thiện: ${esc(a.evidence)}</div>` : ''}
+    </div>
+    <div class="a-btns">
+      ${a.status === 'pending' ? `<button class="btn btn-ghost btn-sm" data-defer title="Chuyển sang ngày mai">→ Mai</button>` : ''}
+      <button class="btn btn-danger btn-sm" data-adel>✕</button>
+    </div>
+  </div>`;
+}
+
+function renderActions(){
+  const pend = state.actions.filter(a => a.status === 'pending').sort((x,y)=> x.targetDate.localeCompare(y.targetDate));
+  const done = state.actions.filter(a => a.status === 'done').sort((x,y)=> y.dateCreated.localeCompare(x.dateCreated));
+  document.getElementById('pendingActions').innerHTML =
+    pend.length ? pend.map(actionHTML).join('') : `<div class="empty">Không có hành động nào đang chờ. Review một hoạt động để tạo hành động 1% đầu tiên.</div>`;
+  document.getElementById('doneActions').innerHTML =
+    done.length ? done.map(actionHTML).join('') : `<div class="empty">Chưa có hành động nào hoàn thành.</div>`;
+}
+
+let mistakeFilter = 'Tất cả';
+function renderMistakes(){
+  // filters
+  const cats = ['Tất cả', ...MISTAKE_CATS];
+  document.getElementById('mistakeFilters').innerHTML =
+    cats.map(c => `<button data-mf="${esc(c)}" class="${mistakeFilter===c?'on':''}">${esc(c)}</button>`).join('');
+
+  // stats
+  const counts = {};
+  state.mistakes.forEach(m => counts[m.category] = (counts[m.category]||0)+1);
+  const contentCount = {};
+  state.mistakes.forEach(m => {
+    const k = m.content.trim().toLowerCase();
+    contentCount[k] = contentCount[k] || {n:0, label:m.content};
+    contentCount[k].n++;
+  });
+  const topRepeat = Object.values(contentCount).sort((a,b)=>b.n-a.n)[0];
+  const withAction = state.mistakes.filter(m => m.action && m.action.trim()).length;
+  const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+  const max = sorted.length ? sorted[0][1] : 1;
+
+  document.getElementById('mistakeStats').innerHTML = state.mistakes.length ? `
+    ${sorted.map(([c,n]) => `
+      <div class="bar-row">
+        <div class="bl">${esc(c)}</div>
+        <div class="bar-track"><div class="bar-fill" style="width:${(n/max)*100}%"></div></div>
+        <div class="bn">${n}</div>
+      </div>`).join('')}
+    <div class="hint" style="margin-top:12px">
+      Lỗi lặp lại nhiều nhất: <b style="color:var(--ink)">${topRepeat && topRepeat.n>1 ? esc(topRepeat.label)+' ('+topRepeat.n+' lần)' : 'chưa có lỗi nào lặp lại'}</b><br>
+      Tổng số lỗi: <b style="color:var(--ink)">${state.mistakes.length}</b> ·
+      Đã chuyển thành hành động cải thiện: <b style="color:var(--ink)">${withAction}</b>
+    </div>` : `<div class="hint">Chưa có dữ liệu. Mistake library sẽ tự đầy lên qua các buổi review.</div>`;
+
+  // pattern alerts (category >= 3)
+  const alerts = sorted.filter(([,n]) => n >= 3);
+  document.getElementById('patternAlerts').innerHTML = alerts.map(([c,n]) => `
+    <div class="pattern-alert">⚠️ <div><b>${esc(c)}</b> đã xuất hiện ${n} lần. Pattern này đã lặp lại nhiều lần —
+    có thể đây không còn là lỗi cá nhân, mà là lỗi hệ thống cần thiết kế lại.</div></div>`).join('');
+
+  // list
+  const list = state.mistakes
+    .filter(m => mistakeFilter === 'Tất cả' || m.category === mistakeFilter)
+    .sort((a,b)=> b.date.localeCompare(a.date));
+  document.getElementById('mistakeList').innerHTML = list.length ? list.map(m => `
+    <div class="mist-card">
+      <div class="row" style="gap:8px;margin-bottom:6px">
+        <span class="chip chip-cat">${esc(m.category)}</span>
+        <span class="chip">${m.date.split('-').reverse().join('/')}</span>
+        ${m.activityTitle ? `<span class="chip">${esc(m.activityTitle)}</span>` : ''}
+      </div>
+      <div class="m-content">${esc(m.content)}</div>
+      ${m.rootCause ? `<div class="m-field"><b>Nguyên nhân:</b> ${esc(m.rootCause)}</div>` : ''}
+      ${m.lesson ? `<div class="m-field"><b>Bài học:</b> ${esc(m.lesson)}</div>` : ''}
+      ${m.action ? `<div class="m-field" style="color:var(--cyan)"><b style="color:var(--cyan)">→ Hành động 1%:</b> ${esc(m.action)}</div>` : ''}
+    </div>`).join('') : `<div class="empty">Không có mục nào trong nhóm này.</div>`;
+}
+document.getElementById('mistakeFilters').addEventListener('click', e => {
+  const b = e.target.closest('[data-mf]');
+  if(b){ mistakeFilter = b.dataset.mf; renderMistakes(); }
+});
+
+// ---------- Today interactions ----------
+document.getElementById('focusSave').addEventListener('click', () => {
+  state.focus[todayStr()] = document.getElementById('focusInput').value.trim();
+  save(); toast('Đã lưu focus hôm nay. Nhỏ và cụ thể — đúng tinh thần 1%.');
+});
+
+document.getElementById('todayActivities').addEventListener('click', e => {
+  const card = e.target.closest('.act-card'); if(!card) return;
+  const act = state.activities.find(a => a.id === card.dataset.id); if(!act) return;
+
+  const st = e.target.closest('[data-status]');
+  if(st){ act.status = st.dataset.status; save(); renderToday(); return; }
+  if(e.target.closest('[data-review]')){ openReview(act); return; }
+  if(e.target.closest('[data-edit]')){ openEdit(act); return; }
+  if(e.target.closest('[data-del]')){
+    if(confirm(`Xoá hoạt động “${act.title}”? Review gắn với nó vẫn được giữ trong Mistake Library.`)){
+      state.activities = state.activities.filter(a => a.id !== act.id);
+      save(); renderToday(); toast('Đã xoá hoạt động.');
+    }
+  }
+});
+
+// action list interactions (shared handler for dashboard + actions tab)
+['todayActions','pendingActions','doneActions'].forEach(id => {
+  document.getElementById(id).addEventListener('click', e => {
+    const item = e.target.closest('.action-item'); if(!item) return;
+    const a = state.actions.find(x => x.id === item.dataset.aid); if(!a) return;
+    if(e.target.closest('[data-toggle]')){
+      a.status = a.status === 'done' ? 'pending' : 'done';
+      save(); renderAll();
+      if(a.status==='done') toast('+1% ✓ Hành vi nhỏ, thay đổi thật.');
+      return;
+    }
+    if(e.target.closest('[data-defer]')){
+      a.targetDate = addDays(todayStr(), 1);
+      save(); renderAll(); toast('Đã chuyển sang ngày mai. Không sao — quan trọng là không bỏ cuộc.');
+      return;
+    }
+    if(e.target.closest('[data-adel]')){
+      if(confirm('Xoá hành động này?')){
+        state.actions = state.actions.filter(x => x.id !== a.id);
+        save(); renderAll(); toast('Đã xoá hành động.');
+      }
+    }
+  });
+});
+
+// ---------- Add activity ----------
+function fillCatSelect(id, cats){
+  document.getElementById(id).innerHTML = cats.map(c => `<option>${esc(c)}</option>`).join('');
+}
+fillCatSelect('fCategory', ACTIVITY_CATS);
+fillCatSelect('eCategory', ACTIVITY_CATS);
+fillCatSelect('rMistakeCat', MISTAKE_CATS);
+
+document.getElementById('addForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const title = document.getElementById('fTitle').value.trim();
+  if(!title) return;
+  state.activities.push({
+    id:uid(), date:todayStr(), title,
+    goal:document.getElementById('fGoal').value.trim(),
+    successCriteria:document.getElementById('fCriteria').value.trim(),
+    category:document.getElementById('fCategory').value,
+    status:'todo', reviewId:null
+  });
+  save(); e.target.reset();
+  toast('Đã thêm vào hôm nay. Định nghĩa “làm tốt” rõ ràng là một nửa chiến thắng.');
+  go('today');
+});
+
+// ---------- Edit activity ----------
+let editingId = null;
+function openEdit(act){
+  editingId = act.id;
+  document.getElementById('eTitle').value = act.title;
+  document.getElementById('eGoal').value = act.goal || '';
+  document.getElementById('eCriteria').value = act.successCriteria || '';
+  document.getElementById('eCategory').value = act.category;
+  document.getElementById('editModal').classList.add('open');
+}
+document.getElementById('editForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const act = state.activities.find(a => a.id === editingId); if(!act) return;
+  act.title = document.getElementById('eTitle').value.trim();
+  act.goal = document.getElementById('eGoal').value.trim();
+  act.successCriteria = document.getElementById('eCriteria').value.trim();
+  act.category = document.getElementById('eCategory').value;
+  save(); closeModals(); renderToday(); toast('Đã cập nhật hoạt động.');
+});
+
+// ---------- Review ----------
+let reviewingId = null;
+function openReview(act){
+  reviewingId = act.id;
+  document.getElementById('rvTitle').textContent = `Review: ${act.title}`;
+  const rv = state.reviews.find(r => r.id === act.reviewId);
+  document.getElementById('rDidWell').value = rv?.didWell || '';
+  document.getElementById('rDidNot').value = rv?.didNotDoWell || '';
+  document.getElementById('rMistakeCat').value = rv?.mistakeCategory || 'Khác';
+  document.getElementById('rCause').value = rv?.rootCause || '';
+  document.getElementById('rLesson').value = rv?.lesson || '';
+  document.getElementById('rAction').value = rv?.onePercentAction || '';
+  document.getElementById('rEvidence').value = rv?.evidence || '';
+  document.getElementById('reviewModal').classList.add('open');
+}
+
+document.getElementById('reviewForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const act = state.activities.find(a => a.id === reviewingId); if(!act) return;
+  const data = {
+    didWell:document.getElementById('rDidWell').value.trim(),
+    didNotDoWell:document.getElementById('rDidNot').value.trim(),
+    mistakeCategory:document.getElementById('rMistakeCat').value,
+    rootCause:document.getElementById('rCause').value.trim(),
+    lesson:document.getElementById('rLesson').value.trim(),
+    onePercentAction:document.getElementById('rAction').value.trim(),
+    evidence:document.getElementById('rEvidence').value.trim()
+  };
+  let rv = state.reviews.find(r => r.id === act.reviewId);
+  const isNew = !rv;
+  if(isNew){
+    rv = { id:uid(), activityId:act.id, date:todayStr() };
+    state.reviews.push(rv);
+    act.reviewId = rv.id;
+  }
+  Object.assign(rv, data);
+
+  // 1% action → Tomorrow's actions
+  if(data.onePercentAction){
+    let a = state.actions.find(x => x.sourceReviewId === rv.id);
+    if(a){ a.content = data.onePercentAction; a.evidence = data.evidence; }
+    else{
+      state.actions.push({
+        id:uid(), sourceReviewId:rv.id, sourceActivityTitle:act.title,
+        dateCreated:todayStr(), targetDate:addDays(todayStr(),1),
+        content:data.onePercentAction, evidence:data.evidence, status:'pending'
+      });
+    }
+  }
+  // Chưa tốt → Mistake Library
+  if(data.didNotDoWell){
+    let m = state.mistakes.find(x => x.reviewId === rv.id);
+    const payload = {
+      activityTitle:act.title, category:data.mistakeCategory,
+      content:data.didNotDoWell, rootCause:data.rootCause,
+      lesson:data.lesson, action:data.onePercentAction
+    };
+    if(m) Object.assign(m, payload);
+    else state.mistakes.push(Object.assign({id:uid(), reviewId:rv.id, date:todayStr()}, payload));
+  }
+  save(); closeModals(); renderAll();
+  toast(isNew ? 'Đã lưu review. Bài học đã sẵn sàng trở thành hành vi của ngày mai.' : 'Đã cập nhật review.');
+});
+
+// ---------- Modals close ----------
+function closeModals(){ document.querySelectorAll('.modal-back').forEach(m => m.classList.remove('open')); }
+document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', closeModals));
+document.querySelectorAll('.modal-back').forEach(m =>
+  m.addEventListener('click', e => { if(e.target === m) closeModals(); })
+);
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeModals(); });
+
+// ---------- Manual 1% action ----------
+document.getElementById('manualActionAdd').addEventListener('click', () => {
+  const inp = document.getElementById('manualAction');
+  const v = inp.value.trim(); if(!v) return;
+  state.actions.push({
+    id:uid(), sourceReviewId:null, sourceActivityTitle:'',
+    dateCreated:todayStr(), targetDate:todayStr(),
+    content:v, evidence:'', status:'pending'
+  });
+  inp.value = ''; save(); renderAll();
+  toast('Đã thêm hành động 1%.');
+});
+document.getElementById('manualAction').addEventListener('keydown', e => {
+  if(e.key === 'Enter'){ e.preventDefault(); document.getElementById('manualActionAdd').click(); }
+});
+
+// ---------- Weekly review ----------
+function generateWeekly(){
+  const t = todayStr();
+  const from = addDays(t,-6);
+  const inRange = d => d >= from && d <= t;
+
+  const revs = state.reviews.filter(r => inRange(r.date));
+  const wells = revs.map(r => r.didWell).filter(Boolean);
+  const lessons = revs.map(r => r.lesson).filter(Boolean).slice(-3);
+
+  const weekMistakes = state.mistakes.filter(m => inRange(m.date));
+  const catCount = {};
+  weekMistakes.forEach(m => catCount[m.category] = (catCount[m.category]||0)+1);
+  const topCat = Object.entries(catCount).sort((a,b)=>b[1]-a[1])[0];
+
+  const contentCount = {};
+  weekMistakes.forEach(m => {
+    const k = m.content.trim().toLowerCase();
+    contentCount[k] = contentCount[k] || {n:0,label:m.content}; contentCount[k].n++;
+  });
+  const topMistake = Object.values(contentCount).sort((a,b)=>b.n-a.n)[0];
+
+  const doneActions = state.actions.filter(a => a.status === 'done' && inRange(a.targetDate)).length;
+  const totalActions = state.actions.filter(a => inRange(a.dateCreated)).length;
+
+  return {
+    weekLabel:`${from.split('-').reverse().join('/')} – ${t.split('-').reverse().join('/')}`,
+    generatedAt:t,
+    didWell: wells.length ? wells.slice(-4) : ['Tuần này chưa có review nào ghi nhận điểm làm tốt — bắt đầu từ một review nhỏ hôm nay.'],
+    topMistake: topMistake ? (topMistake.n > 1 ? `“${topMistake.label}” (lặp lại ${topMistake.n} lần)` : `“${topMistake.label}” (mới xuất hiện 1 lần)`) : 'Không có lỗi nào được ghi nhận tuần này.',
+    lessons: lessons.length ? lessons : ['Chưa có bài học nào được ghi tuần này.'],
+    actionsDone:`${doneActions} hành động 1% đã hoàn thành${totalActions ? ` (trên ${totalActions} hành động được tạo trong tuần)` : ''}.`,
+    nextFocus: topCat
+      ? `Nhóm lỗi nổi bật nhất tuần này là “${topCat[0]}” (${topCat[1]} lần). Gợi ý tuần tới: ${FOCUS_SUGGEST[topCat[0]] || FOCUS_SUGGEST['Khác']}`
+      : 'Chưa đủ dữ liệu lỗi để gợi ý. Tuần tới hãy duy trì review mỗi ngày để hệ thống nhìn thấy pattern của bạn.'
+  };
+}
+
+function weeklyHTML(w, savable){
+  return `
+    <div class="week-block"><div class="wq">Tuần ${esc(w.weekLabel)}</div></div>
+    <div class="week-block"><div class="wq">Tuần này tôi đã làm tốt điều gì?</div>
+      <div class="wa"><ul>${w.didWell.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div></div>
+    <div class="week-block"><div class="wq">Lỗi nào lặp lại nhiều nhất?</div><div class="wa">${esc(w.topMistake)}</div></div>
+    <div class="week-block"><div class="wq">Bài học lớn nhất tuần</div>
+      <div class="wa"><ul>${w.lessons.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div></div>
+    <div class="week-block"><div class="wq">Hành động 1% đã hoàn thành</div><div class="wa">${esc(w.actionsDone)}</div></div>
+    <div class="week-block"><div class="wq">Tuần tới nên tập trung cải thiện</div><div class="wa">${esc(w.nextFocus)}</div></div>
+    ${savable ? `<button class="btn btn-soft btn-sm" id="saveWeekly">Lưu tổng kết này</button>` : ''}`;
+}
+
+let lastWeekly = null;
+document.getElementById('genWeekly').addEventListener('click', () => {
+  lastWeekly = generateWeekly();
+  document.getElementById('weeklyOutput').innerHTML = weeklyHTML(lastWeekly, true);
+  document.getElementById('saveWeekly').addEventListener('click', () => {
+    state.weekly.unshift(Object.assign({id:uid()}, lastWeekly));
+    save(); renderWeeklySaved(); toast('Đã lưu tổng kết tuần.');
+  });
+});
+
+function renderWeeklySaved(){
+  const el = document.getElementById('weeklySaved');
+  el.innerHTML = state.weekly.length
+    ? state.weekly.map(w => `<div class="week-saved">${weeklyHTML(w,false)}</div>`).join('')
+    : `<div class="hint">Chưa có tổng kết tuần nào được lưu.</div>`;
+}
+
+// ---------- Data: export / import / reset ----------
+document.getElementById('exportBtn').addEventListener('click', () => {
+  const blob = new Blob([JSON.stringify(state, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `one-percent-os-${todayStr()}.json`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  toast('Đã export dữ liệu.');
+});
+document.getElementById('importBtn').addEventListener('click', () => document.getElementById('importFile').click());
+document.getElementById('importFile').addEventListener('change', e => {
+  const file = e.target.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try{
+      const data = JSON.parse(reader.result);
+      if(!data || !Array.isArray(data.activities) || !Array.isArray(data.reviews))
+        throw new Error('Sai định dạng');
+      if(confirm('Import sẽ thay thế toàn bộ dữ liệu hiện tại. Tiếp tục?')){
+        state = Object.assign(defaultState(), data, {seeded:true});
+        save(); applyTheme(); renderAll();
+        toast('Đã import dữ liệu thành công.');
+      }
+    }catch(err){
+      toast('File không hợp lệ. Hãy chọn file JSON được export từ 1% OS.');
+    }
+    e.target.value = '';
+  };
+  reader.readAsText(file);
+});
+document.getElementById('resetBtn').addEventListener('click', () => {
+  if(confirm('Xoá TOÀN BỘ dữ liệu: hoạt động, review, hành động 1%, mistake library và tổng kết tuần?')){
+    if(confirm('Chắc chắn chứ? Hành động này không thể hoàn tác. Nên export trước khi xoá.')){
+      const theme = state.theme;
+      state = defaultState(); state.seeded = true; state.theme = theme;
+      save(); renderAll();
+      document.getElementById('weeklyOutput').innerHTML = '';
+      toast('Đã xoá toàn bộ dữ liệu. Một khởi đầu mới.');
+    }
+  }
+});
+
+function renderDataSummary(){
+  document.getElementById('dataSummary').innerHTML =
+    `Hiện có: <b>${state.activities.length}</b> hoạt động · <b>${state.reviews.length}</b> review ·
+     <b>${state.actions.length}</b> hành động 1% · <b>${state.mistakes.length}</b> mistake ·
+     <b>${state.weekly.length}</b> tổng kết tuần.`;
+}
+
+// ---------- Boot ----------
+load();
+applyTheme();
+renderAll();
+</script>
+</body>
+</html>
