@@ -729,10 +729,28 @@ section[data-view].active{display:block;animation:fadein .25s ease}
   .sort-select-wrap{margin-left:0;width:100%}.sort-select{flex:1}
   .plan-activity-head{display:block}
   .plan-head-block{width:100%}
-  .plan-day-nav{display:grid;grid-template-columns:34px minmax(0,1fr) 34px auto;gap:6px}
-  .plan-date-picker{min-width:0;width:100%}
-  .plan-today-btn{padding:0 9px}
-  .activity-tools{width:100%;margin-top:12px}
+  .plan-day-nav{
+    display:grid;
+    grid-template-columns:30px minmax(0,1fr) 30px auto;
+    gap:4px;width:100%;align-items:center;flex-wrap:nowrap;
+  }
+  .plan-day-arrow{
+    width:30px;height:32px;border-radius:9px;font-size:20px;
+  }
+  .plan-date-picker{
+    min-width:0;width:100%;height:32px;padding:0 8px;gap:4px;border-radius:9px;
+  }
+  .plan-date-main{font-size:11.5px;text-align:center}
+  .plan-date-full{display:none}
+  .plan-date-compact{display:inline}
+  .plan-date-icon{display:none}
+  .plan-today-btn{
+    width:auto;min-width:38px;height:32px;padding:0 7px;
+    border-radius:9px;font-size:10.5px;white-space:nowrap;
+  }
+  .plan-today-full{display:none}
+  .plan-today-compact{display:inline}
+  .activity-tools{width:100%;margin-top:10px}
 }
 .day-picker{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
 .day-picker .filter-row{margin-bottom:0}
@@ -744,7 +762,7 @@ section[data-view].active{display:block;animation:fadein .25s ease}
 .plan-head-block{display:flex;flex-direction:column;gap:9px;min-width:0}
 .plan-head-block h2{margin:0}
 .plan-day-nav{
-  display:flex;align-items:center;gap:6px;flex-wrap:wrap;
+  display:flex;align-items:center;gap:6px;flex-wrap:nowrap;max-width:100%;
 }
 .plan-day-arrow{
   width:34px;height:34px;display:grid;place-items:center;
@@ -765,6 +783,10 @@ section[data-view].active{display:block;animation:fadein .25s ease}
   flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   font-family:var(--font-display);font-size:12.5px;font-weight:800;color:var(--ink);
 }
+.plan-date-full{display:inline}
+.plan-date-compact{display:none}
+.plan-today-full{display:inline}
+.plan-today-compact{display:none}
 .plan-date-icon{font-size:13px;flex:0 0 auto}
 .plan-date-picker input{
   position:absolute;width:1px;height:1px;opacity:0;
@@ -1313,6 +1335,16 @@ section[data-view].active{display:block;animation:fadein .25s ease}
   .timer-screen.pinned .timer-count{font-size:20px;min-width:58px}
   .mini-btn{width:27px;height:27px}
 }
+@media (max-width:390px){
+  .hero-budget .tb-dash{grid-template-columns:106px minmax(0,1fr);gap:8px}
+  .hero-budget .ring{width:106px;height:106px}
+  .hero-budget .ring .center .big{font-size:20px}
+  .hero-budget .daypart-row{min-height:35px;padding:5px 6px}
+  .hero-budget .daypart-name span{font-size:10.5px}
+  .hero-budget .daypart-value b{font-size:13px}
+  .hero-budget .daypart-value small::after{font-size:8px}
+  .hero-budget .daypart-summary{font-size:8px}
+}
 
 /* ============ MOBILE ============ */
 @media (max-width:760px){
@@ -1339,9 +1371,43 @@ section[data-view].active{display:block;animation:fadein .25s ease}
     min-height:200px;
   }
   .tree-svg{max-height:190px}
-  .hero-budget .tb-dash{width:100%;align-items:flex-start}
-  .hero-budget .ring{margin:0 auto}
-  .hero-budget .daypart-list{width:100%}
+  .hero-budget{width:100%;display:block}
+  .hero-budget .tb-dash{
+    width:100%;
+    display:grid;
+    grid-template-columns:118px minmax(0,1fr);
+    align-items:center;
+    gap:10px;
+  }
+  .hero-budget .ring{
+    width:118px;height:118px;margin:0;
+    align-self:center;justify-self:center;
+  }
+  .hero-budget .ring svg{width:100%;height:100%;display:block}
+  .hero-budget .ring .center .big{font-size:22px}
+  .hero-budget .ring .center .small{font-size:8px;margin-top:3px}
+  .hero-budget .daypart-list{
+    width:100%;min-width:0!important;gap:5px!important;
+  }
+  .hero-budget .daypart-row{
+    min-height:38px;
+    gap:6px;padding:6px 7px;border-radius:10px;
+  }
+  .hero-budget .daypart-name span{font-size:11px}
+  .hero-budget .daypart-name small{display:none}
+  .hero-budget .daypart-value b{font-size:14px}
+  .hero-budget .daypart-value small{
+    font-size:0;line-height:1.15;
+    max-width:82px;overflow:hidden;text-overflow:ellipsis;
+  }
+  .hero-budget .daypart-value small::after{
+    content:attr(data-mobile-label);
+    font-size:8.5px;color:#C9E2F5;font-weight:600;white-space:nowrap;
+  }
+  .hero-budget .daypart-summary{
+    gap:4px;padding-top:0;font-size:8.5px;line-height:1.2;
+  }
+  .hero-budget .daypart-summary b{font-size:9.5px}
   .repeat-day-grid{grid-template-columns:repeat(4,1fr)}
   .theme-fab{
     display:flex!important;position:fixed;top:14px;right:14px;z-index:41;
@@ -1733,12 +1799,17 @@ input[type="time"]::-webkit-calendar-picker-indicator:hover{opacity:1;}
             <div class="plan-day-nav" aria-label="Điều hướng ngày">
               <button type="button" class="plan-day-arrow" id="dayPrevBtn" aria-label="Ngày trước" title="Ngày trước">‹</button>
               <div class="plan-date-picker" id="planDatePickerTrigger" role="button" tabindex="0" aria-label="Chọn một ngày khác" title="Chọn một ngày khác">
-                <span class="plan-date-main" id="planDateLabel">Hôm nay</span>
+                <span class="plan-date-main">
+                  <span class="plan-date-full" id="planDateLabel">Hôm nay</span>
+                  <span class="plan-date-compact" id="planDateLabelCompact">HN · 13/07</span>
+                </span>
                 <span class="plan-date-icon" aria-hidden="true">📅</span>
                 <input type="date" id="dayPick" aria-label="Chọn ngày" tabindex="-1">
               </div>
               <button type="button" class="plan-day-arrow" id="dayNextBtn" aria-label="Ngày sau" title="Ngày sau">›</button>
-              <button type="button" class="plan-today-btn" id="dayTodayBtn">Hôm nay</button>
+              <button type="button" class="plan-today-btn" id="dayTodayBtn" aria-label="Về hôm nay" title="Về hôm nay">
+                <span class="plan-today-full">Hôm nay</span><span class="plan-today-compact">Nay</span>
+              </button>
             </div>
           </div>
           <div class="activity-tools">
@@ -1938,7 +2009,7 @@ input[type="time"]::-webkit-calendar-picker-indicator:hover{opacity:1;}
       </div>
       <div class="card">
         <h3 style="font-size:15px;margin-bottom:8px">☁️ Đồng bộ đám mây (Firebase)</h3>
-        <p class="hint" style="margin-bottom:12px"><b>Tự đẩy lên mây</b> sau mỗi thay đổi (chờ ~3 giây gộp thao tác). Nếu thiết bị khác vừa sửa, app sẽ <b>tạm dừng tự đẩy và báo bạn Tải về trước</b> để không ghi đè mất dữ liệu. Khi mở app ở máy khác, bấm <b>Tải về máy</b> để lấy bản mới nhất.</p>
+        <p class="hint" style="margin-bottom:12px"><b>Đồng bộ tức thì:</b> mỗi thao tác làm thay đổi dữ liệu sẽ được gửi lên Firebase ngay, không chờ và không gộp thao tác. Nếu thiết bị khác vừa sửa, app sẽ <b>tạm dừng tự đẩy và báo bạn Tải về trước</b> để tránh ghi đè mất dữ liệu.</p>
         <div class="row" style="gap:12px">
           <button class="btn btn-primary" id="syncUpBtn">☁️ Đồng bộ ngay</button>
           <button class="btn btn-ghost" id="syncDownBtn">⬇️ Tải về máy</button>
@@ -2582,6 +2653,18 @@ function planDateLabel(date){
   if(date === yesterday) return `Hôm qua · ${short}`;
   return `${weekday} · ${short}${y !== Number(today.slice(0,4)) ? `/${y}` : ''}`;
 }
+function planDateLabelCompact(date){
+  const today = todayStr();
+  const tomorrow = addDays(today, 1);
+  const yesterday = addDays(today, -1);
+  const [y,m,d] = date.split('-').map(Number);
+  const shortDays = ['CN','T2','T3','T4','T5','T6','T7'];
+  const short = `${String(d).padStart(2,'0')}/${String(m).padStart(2,'0')}`;
+  if(date === today) return `HN · ${short}`;
+  if(date === tomorrow) return `Mai · ${short}`;
+  if(date === yesterday) return `Qua · ${short}`;
+  return `${shortDays[new Date(y, m-1, d).getDay()]} · ${short}`;
+}
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,7);
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function quoteMarkup(quote){
@@ -3043,6 +3126,9 @@ function renderTimeBudget(){
     planEl.textContent = totalPlanned
       ? `${fmtMinsShort(totalPlanned)} đã lên block`
       : 'Chưa có block';
+    planEl.dataset.mobileLabel = totalPlanned
+      ? `${fmtMinsShort(totalPlanned)} block`
+      : '0p block';
     row?.classList.toggle('past', isPast);
     row?.classList.toggle('current', isCurrent);
   });
@@ -3512,6 +3598,7 @@ function renderToday(){
   todayBtn.classList.toggle('is-today', t === today);
   document.getElementById('dayPick').value = t;
   document.getElementById('planDateLabel').textContent = planDateLabel(t);
+  document.getElementById('planDateLabelCompact').textContent = planDateLabelCompact(t);
   if(document.getElementById('qDate')) setQuickDate(t);
   const dayLabel = t === today ? 'hôm nay' : (t === addDays(today,1) ? 'ngày mai' : `ngày ${t.split('-').reverse().join('/')}`);
   document.getElementById('actsHeading').textContent = 'Công việc trong ngày';
@@ -5915,57 +6002,74 @@ if(!DEVICE_ID){ DEVICE_ID = Math.random().toString(36).slice(2,10); localStorage
 let knownStamp = Number(localStorage.getItem('opos_known_stamp') || 0);
 function setKnownStamp(s){ knownStamp = s; localStorage.setItem('opos_known_stamp', String(s)); }
 
-let pushTimer = null;
 let conflictPending = false; // đang có xung đột chờ người dùng xử lý -> ngừng auto-push
+let realtimePushChain = Promise.resolve();
+let realtimePushPending = 0;
+let realtimePushSequence = 0;
 
-// ---- Tự đẩy lên mây (có kiểm tra xung đột trước khi ghi đè) ----
-async function autoPush(){
-  if(!db || conflictPending) return;
-  try{
-    // 1) Đọc trước xem mây có mới hơn bản mình biết không
-    const snap = await get(ref(db, 'sync/' + SYNC_ID));
-    if(snap.exists()){
-      const cloud = snap.val();
-      const cloudStamp = cloud.stamp || 0;
-      if(cloudStamp > knownStamp && cloud.origin !== DEVICE_ID){
-        // Máy khác đã sửa sau lần mình đồng bộ gần nhất -> KHÔNG đè, cảnh báo
-        conflictPending = true;
-        const when = cloud.updatedAt ? new Date(cloud.updatedAt).toLocaleString('vi-VN') : '';
-        setStatus('⚠️ Có thay đổi từ thiết bị khác (' + when + '). Bấm "Tải về máy" trước khi tiếp tục để tránh mất dữ liệu.');
-        toast('⚠️ Thiết bị khác vừa cập nhật. Hãy Tải về máy trước.');
-        return;
-      }
+// ---- Ghi từng thay đổi lên mây ngay lập tức, theo đúng thứ tự phát sinh ----
+async function pushSnapshot(snapshot, sequence){
+  if(!db || conflictPending) return false;
+
+  // Đọc trước để tránh ghi đè một bản mới hơn từ thiết bị khác.
+  const snap = await get(ref(db, 'sync/' + SYNC_ID));
+  if(snap.exists()){
+    const cloud = snap.val();
+    const cloudStamp = cloud.stamp || 0;
+    if(cloudStamp > knownStamp && cloud.origin !== DEVICE_ID){
+      conflictPending = true;
+      const when = cloud.updatedAt ? new Date(cloud.updatedAt).toLocaleString('vi-VN') : '';
+      setStatus('⚠️ Có thay đổi từ thiết bị khác (' + when + '). Bấm "Tải về máy" trước khi tiếp tục để tránh mất dữ liệu.');
+      toast('⚠️ Thiết bị khác vừa cập nhật. Hãy Tải về máy trước.');
+      return false;
     }
-    // 2) An toàn -> ghi đè
-    const stamp = Date.now();
-    await set(ref(db, 'sync/' + SYNC_ID), {
-      state: JSON.stringify(state),
-      updatedAt: new Date().toISOString(),
-      stamp, origin: DEVICE_ID,
-      device: navigator.platform || 'unknown'
-    });
-    setKnownStamp(stamp);
-    setStatus('✅ Đã tự đồng bộ lúc ' + new Date().toLocaleTimeString('vi-VN'));
-  }catch(e){
-    setStatus('❌ Lỗi tự đẩy: ' + e.message);
   }
+
+  const stamp = Date.now();
+  await set(ref(db, 'sync/' + SYNC_ID), {
+    state: snapshot,
+    updatedAt: new Date().toISOString(),
+    stamp,
+    origin: DEVICE_ID,
+    device: navigator.platform || 'unknown',
+    sequence
+  });
+  setKnownStamp(stamp);
+  return true;
 }
 
-// Gộp nhiều thay đổi liên tiếp trong 3 giây thành 1 lần đẩy
-function schedulePush(){
+function pushImmediately(){
   if(!db || conflictPending) return;
-  clearTimeout(pushTimer);
-  setStatus('… sắp tự đồng bộ');
-  pushTimer = setTimeout(autoPush, 3000);
+
+  // Chụp trạng thái ngay tại thời điểm action xảy ra.
+  // Không dùng state toàn cục ở thời điểm mạng hoàn tất để tránh gộp mất action.
+  const snapshot = JSON.stringify(state);
+  const sequence = ++realtimePushSequence;
+  realtimePushPending += 1;
+  setStatus(`🔄 Đang đồng bộ thay đổi #${sequence}…`);
+
+  realtimePushChain = realtimePushChain
+    .then(() => pushSnapshot(snapshot, sequence))
+    .then(ok => {
+      if(ok) setStatus('✅ Đã đồng bộ tức thì lúc ' + new Date().toLocaleTimeString('vi-VN'));
+    })
+    .catch(e => {
+      setStatus('❌ Lỗi đồng bộ tức thì: ' + e.message);
+    })
+    .finally(() => {
+      realtimePushPending = Math.max(0, realtimePushPending - 1);
+      if(realtimePushPending > 0 && !conflictPending){
+        setStatus(`🔄 Đang đồng bộ ${realtimePushPending} thay đổi còn lại…`);
+      }
+    });
 }
 
-// Gắn schedulePush vào mỗi lần save() qua hook đã mở ở script chính
-if(window.__setAfterSave){ window.__setAfterSave(schedulePush); }
+// Mỗi lần save() là một lần ghi Firebase riêng, không debounce.
+if(window.__setAfterSave){ window.__setAfterSave(pushImmediately); }
 
 // ---- Nút "Đồng bộ ngay" (đẩy thủ công tức thì) ----
 document.getElementById('syncUpBtn').addEventListener('click', async () => {
   if (!requireConfig()) return;
-  clearTimeout(pushTimer);
   conflictPending = false; // người dùng chủ động đẩy -> chấp nhận ghi đè
   setStatus('Đang đẩy lên mây…');
   try{
@@ -6021,7 +6125,7 @@ document.getElementById('syncDownBtn').addEventListener('click', async () => {
 
 // Khi mở app: đồng bộ mốc knownStamp với mây (nếu mây mới hơn thì báo để tải về)
 if(db){
-  setStatus('🔄 Tự đồng bộ đang bật');
+  setStatus('⚡ Đồng bộ tức thì đang bật');
   get(ref(db, 'sync/' + SYNC_ID)).then(snap => {
     if(snap.exists()){
       const cloud = snap.val();
