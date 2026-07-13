@@ -189,6 +189,22 @@ section[data-view].active{display:block;animation:fadein .25s ease}
 .calendar-latin-quote .quote-english{display:block;font-family:var(--font-display);font-size:15px;font-weight:700;color:var(--ink);line-height:1.55}
 .calendar-latin-quote .quote-latin{display:block;margin-top:7px;color:var(--cyan);font-family:Georgia,'Times New Roman',serif;font-size:13px;font-style:italic}
 .calendar-latin-quote .quote-source{display:block;margin-top:5px;color:var(--muted);font-size:11.5px}
+.calendar-head-quote{
+  max-width:680px;margin-top:8px;padding:8px 0 8px 13px;
+  border-left:3px solid var(--cyan);
+}
+.calendar-head-quote .quote-kicker{margin-bottom:4px}
+.calendar-head-quote .quote-english{
+  display:block;color:var(--ink);font-family:var(--font-display);
+  font-size:14px;font-weight:700;line-height:1.5;
+}
+.calendar-head-quote .quote-latin{
+  display:block;margin-top:4px;color:var(--cyan);
+  font-family:Georgia,'Times New Roman',serif;font-size:12.5px;font-style:italic;
+}
+.calendar-head-quote .quote-source{
+  display:block;margin-top:3px;color:var(--muted);font-size:11px;
+}
 
 
 .empty{
@@ -849,6 +865,53 @@ section[data-view].active{display:block;animation:fadein .25s ease}
 }
 [data-theme="dark"] .toast{background:var(--blue);color:#08131F}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+.timer-finish-banner{
+  position:fixed;top:16px;left:50%;z-index:120;
+  width:min(560px,calc(100vw - 28px));
+  transform:translate(-50%,-18px);
+  display:flex;align-items:center;gap:11px;
+  padding:11px 12px;border-radius:16px;
+  background:color-mix(in srgb,var(--surface) 90%,transparent);
+  border:1px solid color-mix(in srgb,var(--cyan) 35%,var(--line));
+  box-shadow:0 14px 38px rgba(0,0,0,.22);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .22s ease,transform .22s ease,visibility .22s;
+}
+.timer-finish-banner.show{
+  opacity:1;visibility:visible;pointer-events:auto;
+  transform:translate(-50%,0);
+}
+.timer-finish-icon{
+  width:38px;height:38px;flex:0 0 auto;border-radius:12px;
+  display:grid;place-items:center;font-size:19px;
+  background:var(--cyan-soft);color:var(--cyan);
+}
+.timer-finish-copy{flex:1;min-width:0;display:flex;flex-direction:column}
+.timer-finish-copy strong{
+  font-family:var(--font-display);font-size:13.5px;color:var(--ink);line-height:1.3;
+}
+.timer-finish-copy span{
+  color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.timer-finish-actions{display:flex;gap:6px;flex:0 0 auto}
+.timer-finish-actions button{
+  width:32px;height:32px;border-radius:10px;
+  border:1px solid var(--line);background:var(--surface-2);
+  color:var(--ink);font-size:16px;font-weight:900;display:grid;place-items:center;
+}
+.timer-finish-actions button:first-child{background:var(--blue);border-color:var(--blue);color:#fff}
+.timer-finish-actions button:hover{filter:brightness(1.06)}
+[data-theme="dark"] .timer-finish-banner{
+  background:rgba(33,23,15,.9);border-color:#795727;
+}
+@media(max-width:520px){
+  .timer-finish-banner{top:10px;padding:9px 10px;gap:8px}
+  .timer-finish-icon{width:34px;height:34px}
+  .timer-finish-copy strong{font-size:12.5px}
+  .timer-finish-copy span{font-size:11.5px}
+}
 
 
 /* ============ 1% CORE & REPORT ============ */
@@ -1644,7 +1707,7 @@ input[type="time"]::-webkit-calendar-picker-indicator:hover{opacity:1;}
         <div>
           <div class="eyebrow">Lịch sử &amp; kế hoạch</div>
           <h1>Lịch công việc</h1>
-          <p class="sub">Ưu tiên xem lại những ngày đã qua, mở lại công việc để chỉnh sửa; kế hoạch tương lai được giữ gọn và vừa đủ.</p>
+          <div class="calendar-head-quote" id="calendarHeadQuote" aria-live="polite"></div>
         </div>
         <button class="btn btn-soft" id="calendarTodayBtn">Về hôm nay</button>
       </div>
@@ -2080,6 +2143,18 @@ input[type="time"]::-webkit-calendar-picker-indicator:hover{opacity:1;}
 </div>
 
 <div class="toast" id="toast"></div>
+
+<div class="timer-finish-banner" id="timerFinishBanner" role="alert" aria-live="assertive" aria-atomic="true">
+  <div class="timer-finish-icon">⏰</div>
+  <div class="timer-finish-copy">
+    <strong>Đồng hồ đã hết giờ</strong>
+    <span id="timerFinishTask">Phiên tập trung đã kết thúc.</span>
+  </div>
+  <div class="timer-finish-actions">
+    <button type="button" id="timerBannerDone" title="Đánh dấu đã xong" aria-label="Đánh dấu đã xong">✓</button>
+    <button type="button" id="timerBannerDismiss" title="Đóng thông báo" aria-label="Đóng thông báo">×</button>
+  </div>
+</div>
 
 <div class="timer-screen" id="timerScreen">
   <div class="timer-title" id="timerTitle"></div>
@@ -3099,7 +3174,9 @@ function renderCalendar(){
   const label=document.getElementById('calendarPeriodLabel');
   const grid=document.getElementById('calendarGrid');
   const summary=document.getElementById('calendarSummary');
+  const headQuote=document.getElementById('calendarHeadQuote');
   if(!label||!grid||!summary) return;
+  if(headQuote) headQuote.innerHTML=latinQuoteMarkup(calendarLatinQuote(calendarSelectedDate));
   label.textContent=calendarPeriodTitle();
   document.querySelectorAll('#calendarModeTabs [data-cal-mode]').forEach(b=>b.classList.toggle('on',b.dataset.calMode===calendarMode));
   const range=calendarRange(),st=calendarPeriodStats(range.start,range.end);
@@ -3113,8 +3190,7 @@ function renderCalendar(){
       <div class="calendar-metric"><div class="cm-v ${st.unfinishedPast?'warn':''}">${st.unfinishedPast}</div><div class="cm-l">Việc quá khứ chưa xong</div></div>
     </div>
     <div class="calendar-progress"><i style="width:${st.pct}%"></i></div>
-  </div>
-  <div class="card calendar-latin-quote">${latinQuoteMarkup(calendarLatinQuote(calendarSelectedDate))}</div>`;
+  </div>`;
   grid.innerHTML=calendarMode==='week'?calendarWeekHtml():calendarMode==='month'?calendarMonthHtml():calendarYearHtml();
   grid.querySelectorAll('[data-cal-date]').forEach(b=>b.addEventListener('click',()=>calendarSelectDate(b.dataset.calDate)));
   grid.querySelectorAll('[data-cal-month]').forEach(b=>b.addEventListener('click',()=>{
@@ -3736,11 +3812,57 @@ let timerPinMode = null; // 'pip' | 'in-app' | null
 let timerPiPWindow = null;
 const originalDocTitle = document.title;
 function loadTimerSettings(){
-  try{ return Object.assign({bell:true}, JSON.parse(localStorage.getItem(TIMER_SETTINGS_KEY) || '{}')); }
-  catch(e){ return {bell:true}; }
+  try{ return Object.assign({bell:true, notification:true}, JSON.parse(localStorage.getItem(TIMER_SETTINGS_KEY) || '{}')); }
+  catch(e){ return {bell:true, notification:true}; }
 }
 let timerSettings = loadTimerSettings();
+let timerSystemNotification = null;
 function saveTimerSettings(){ localStorage.setItem(TIMER_SETTINGS_KEY, JSON.stringify(timerSettings)); }
+async function requestTimerNotificationPermission(){
+  if(!timerSettings.notification || !('Notification' in window)) return false;
+  if(Notification.permission === 'granted') return true;
+  if(Notification.permission === 'denied') return false;
+  try{
+    const permission = await Notification.requestPermission();
+    return permission === 'granted';
+  }catch(e){
+    return false;
+  }
+}
+function showTimerSystemNotification(){
+  if(!timerSettings.notification || !('Notification' in window) || Notification.permission !== 'granted') return;
+  try{
+    if(timerSystemNotification) timerSystemNotification.close();
+    timerSystemNotification = new Notification('⏰ Đồng hồ đã hết giờ', {
+      body: timerState.title ? `“${timerState.title}” đã kết thúc.` : 'Phiên tập trung đã kết thúc.',
+      tag: 'one-percent-garden-timer',
+      renotify: true,
+      requireInteraction: true
+    });
+    timerSystemNotification.onclick = () => {
+      try{ window.focus(); }catch(e){}
+      showTimerFinishBanner();
+      timerSystemNotification?.close();
+    };
+  }catch(e){}
+}
+function closeTimerSystemNotification(){
+  if(timerSystemNotification){
+    try{ timerSystemNotification.close(); }catch(e){}
+    timerSystemNotification = null;
+  }
+}
+function showTimerFinishBanner(){
+  const banner = document.getElementById('timerFinishBanner');
+  const task = document.getElementById('timerFinishTask');
+  if(task) task.textContent = timerState.title
+    ? `“${timerState.title}” đã kết thúc.`
+    : 'Phiên tập trung đã kết thúc.';
+  banner?.classList.add('show');
+}
+function hideTimerFinishBanner(){
+  document.getElementById('timerFinishBanner')?.classList.remove('show');
+}
 function syncTimerToolButtons(){
   const bell = document.getElementById('timerBell');
   const pin = document.getElementById('timerPin');
@@ -4013,17 +4135,21 @@ function startTimer(act, sub){
   timerState.pausedRemaining = mins*60;
   timerState.pausedElapsed = 0;
   timerState.finishReason = null;
+  hideTimerFinishBanner();
+  closeTimerSystemNotification();
   syncTimerToolButtons();
   if(timerSettings.bell) unlockTimerAudio(false);
+  requestTimerNotificationPermission();
 
   document.getElementById('timerTitle').textContent = target.title;
   const screen = document.getElementById('timerScreen');
-  screen.classList.remove('finished');
+  screen.classList.remove('open','finished','pinned');
   closeTimerPiP({restore:false});
-  screen.classList.add('open');
   document.getElementById('timerPause').textContent = '⏸ Tạm dừng';
   updateTimerUI();
   timerState.tick = setInterval(updateTimerUI, 1000);
+  // Starting a focus session always opens directly in the smallest pinned mode.
+  setTimerPinned(true);
 }
 
 function updateTimerUI(){
@@ -4065,11 +4191,17 @@ function finishTimer({manual=false}={}){
   if(!timerState.countUp) countEl.textContent = '00:00';
   document.getElementById('timerMode').textContent = manual ? 'Đã dừng' : 'Hết giờ';
   document.title = manual ? originalDocTitle : `Hết giờ · ${timerState.title || '1% Garden'}`;
-  closeTimerPiP({restore:true});
+
   if(!manual && !timerState.countUp){
+    // Natural timeout: remain unobtrusive and notify globally.
+    closeTimerPiP({restore:false});
+    screen.classList.remove('open','pinned');
     playTimerBell();
-    toast('⏰ Hết giờ! Bạn đã hoàn thành phiên tập trung.');
+    showTimerFinishBanner();
+    showTimerSystemNotification();
   }else{
+    // Manual stop keeps the existing confirmation screen.
+    closeTimerPiP({restore:true});
     toast('Đã dừng phiên tập trung.');
   }
 }
@@ -4080,8 +4212,10 @@ function stopTimerLoop(){
 function closeTimer(){
   stopTimerLoop();
   const screen = document.getElementById('timerScreen');
-  screen.classList.remove('open','finished');
+  screen.classList.remove('open','finished','pinned');
   document.getElementById('timerCount').classList.remove('over');
+  hideTimerFinishBanner();
+  closeTimerSystemNotification();
   timerState.actId = timerState.subId = null;
   timerState.finished = false;
   timerState.finishReason = null;
@@ -4125,6 +4259,14 @@ document.getElementById('timerStop').addEventListener('click', () => {
   finishTimer({manual:true});
 });
 document.getElementById('timerExit').addEventListener('click', closeTimer);
+document.getElementById('timerBannerDone').addEventListener('click', () => {
+  hideTimerFinishBanner();
+  document.getElementById('timerDone').click();
+});
+document.getElementById('timerBannerDismiss').addEventListener('click', () => {
+  hideTimerFinishBanner();
+  closeTimer();
+});
 
 document.getElementById('timerPin').addEventListener('click', toggleTimerPin);
 document.getElementById('miniPause').addEventListener('click', () => document.getElementById('timerPause').click());
