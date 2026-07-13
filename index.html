@@ -926,6 +926,10 @@ section[data-view].active{display:block;animation:fadein .25s ease}
   #celebrateModal .celebrate-quote{font-size:15.5px;line-height:1.55;margin-bottom:18px}
   #celebrateModal .celebrate-actions .btn{width:100%;justify-content:center}
 }
+@media (max-width:520px){
+  .timer-done-actions-compact{width:100%;gap:10px}
+  .timer-done-actions-compact .timer-btn{flex:1 1 100%;max-width:none;width:100%}
+}
 .confetti{position:absolute;top:-10px;width:8px;height:14px;border-radius:2px;animation:fall 1.8s ease-in forwards;opacity:.92}
 @keyframes fall{to{transform:translateY(360px) rotate(720deg);opacity:0}}
 @keyframes celebrateBounce{0%{transform:scale(.6);opacity:.3}55%{transform:scale(1.14)}100%{transform:scale(1);opacity:1}}
@@ -1146,6 +1150,8 @@ section[data-view].active{display:block;animation:fadein .25s ease}
 .timer-btn.primary{background:#fff;color:#0A1F3C;border-color:#fff}
 .timer-btn.primary:hover{background:#DCEBFA}
 .timer-done-actions{display:none;gap:14px;margin-top:6vh;flex-wrap:wrap;justify-content:center}
+.timer-done-actions-compact{width:min(100%,520px)}
+.timer-done-actions-compact .timer-btn{flex:1 1 180px;max-width:240px}
 .timer-screen.finished .timer-controls{display:none}
 .timer-screen.finished .timer-done-actions{display:flex}
 /* ===== Ghim đồng hồ: tối giản, chỉ thời gian + icon điều khiển ===== */
@@ -1935,7 +1941,7 @@ input[type="time"]::-webkit-calendar-picker-indicator:hover{opacity:1;}
     <form id="subtaskBoardForm">
       <div class="f-group"><label>Tên việc con *</label><input id="sbTitle" required></div>
       <div class="f-group"><label>Mô tả</label><textarea id="sbDesc" placeholder="Mục tiêu, tiêu chuẩn làm tốt hoặc ghi chú riêng của việc con…"></textarea></div>
-      <div class="from-link sub-parent-note">↳ Thuộc công việc lớn: <b id="sbParentLabel"></b></div>
+      <div class="from-link sub-parent-note">↳ Đây là việc con của: <b id="sbParentLabel"></b><br><span class="hint">Trạng thái 1% thuộc công việc lớn hoặc một việc 1% độc lập, không gắn riêng cho việc con.</span></div>
       <label class="subtask-done-check"><input type="checkbox" id="sbDone"> <span>Đã hoàn thành việc con</span></label>
       <div class="board-meta-grid compact-meta-grid subtask-meta-grid">
         <div class="f-group"><label>Ngày</label><input type="date" id="sbDate"></div>
@@ -2098,9 +2104,8 @@ input[type="time"]::-webkit-calendar-picker-indicator:hover{opacity:1;}
     <button class="timer-btn" id="timerPause">⏸ Tạm dừng</button>
     <button class="timer-btn" id="timerStop">Dừng</button>
   </div>
-  <div class="timer-done-actions">
+  <div class="timer-done-actions timer-done-actions-compact">
     <button class="timer-btn primary" id="timerDone">✓ Đã xong</button>
-    <button class="timer-btn" id="timerContinue">Chưa xong, làm tiếp</button>
     <button class="timer-btn" id="timerExit">Thoát</button>
   </div>
 </div>
@@ -3527,7 +3532,7 @@ function renderActCard(a){
             ${s.description ? `<div class="sub-desc">${esc(s.description)}</div>` : ''}
             <div class="row" style="gap:6px;margin-top:8px;flex-wrap:wrap">
               <button class="btn btn-soft btn-sm" data-sub-review data-sid2="${s.id}">✎ ${srv ? 'Xem / sửa review' : 'Review'}</button>
-              <button class="btn btn-ghost btn-sm" data-sub-edit data-sid2="${s.id}">Sửa mô tả</button>
+              <button class="btn btn-ghost btn-sm" data-sub-edit data-sid2="${s.id}">Mở board việc con</button>
             </div>
             ${srv && srv.lesson ? `<div class="review-snippet"><div class="rl">Bài học</div>${esc(srv.lesson)}</div>` : ''}
           </div>`;
@@ -4160,22 +4165,6 @@ document.getElementById('timerDone').addEventListener('click', () => {
   }
 });
 
-// "Chưa xong, làm tiếp" -> mở việc để thêm subtask nối tiếp
-document.getElementById('timerContinue').addEventListener('click', () => {
-  const act = state.activities.find(a => a.id === timerState.actId);
-  closeTimer();
-  if(act){
-    openActs.add(act.id);
-    renderToday();
-    const card = document.querySelector(`.act-card[data-id="${act.id}"]`);
-    if(card){
-      card.scrollIntoView({behavior:'smooth', block:'center'});
-      const inp = card.querySelector('[data-sub-title]');
-      if(inp){ inp.focus(); inp.placeholder = 'Phần còn lại cần làm tiếp…'; }
-    }
-    toast('Tạo việc con cho phần còn lại và gán thời lượng để chạy tiếp.');
-  }
-});
 // ---------- Textarea auto-grow trong modal ----------
 function growTextarea(ta){ ta.style.height = 'auto'; ta.style.height = (ta.scrollHeight + 2) + 'px'; }
 function autoGrowModal(modalId){
@@ -4540,7 +4529,7 @@ document.getElementById('todayActivities').addEventListener('click', e => {
   const subEditBtn = e.target.closest('[data-sub-edit]');
   if(subEditBtn){
     const sub = (act.subs||[]).find(s => s.id === subEditBtn.dataset.sid2);
-    if(sub) openSubEdit(act, sub);
+    if(sub) openSubtaskBoard(act, sub);
     return;
   }
   if(e.target.closest('[data-sub-add]')){
@@ -5168,6 +5157,10 @@ document.getElementById('addForm').addEventListener('submit', e => {
 // ---------- Edit activity ----------
 let editingId = null;
 function openEdit(act){
+  if(act?.__daySubtask && act.parent && act.sub){
+    openSubtaskBoard(act.parent, act.sub);
+    return;
+  }
   editingId = act.id;
   subEditRef = null;
   document.querySelector('#editModal h2').textContent = 'Sửa hoạt động';
@@ -5193,18 +5186,13 @@ function openEdit(act){
 }
 document.getElementById('editForm').addEventListener('submit', e => {
   e.preventDefault();
-  // ----- sửa việc con -----
+  // Safety guard for stale UI state from older versions.
   if(subEditRef){
     const act = state.activities.find(a => a.id === subEditRef.actId);
     const sub = act && (act.subs||[]).find(s => s.id === subEditRef.subId);
-    if(sub){
-      sub.title = document.getElementById('eTitle').value.trim();
-      sub.description = document.getElementById('eDesc').value.trim();
-      sub.startTime = document.getElementById('eStartTime').value || null;
-      sub.durationMinutes = readDuration('eDuration','eDurationCustom');
-    }
     subEditRef = null;
-    save(); closeModals(); renderToday(); toast('Đã cập nhật việc con.');
+    closeModals();
+    if(act && sub) openSubtaskBoard(act, sub);
     return;
   }
   // ----- sửa việc lớn -----
@@ -5221,28 +5209,13 @@ document.getElementById('editForm').addEventListener('submit', e => {
   save(); closeModals(); renderToday(); toast('Đã cập nhật hoạt động.');
 });
 
-// ---------- Edit subtask (mô tả) ----------
-let subEditRef = null; // {actId, subId}
+// ---------- Edit subtask ----------
+let subEditRef = null; // kept for backward compatibility with older saved UI state
 function openSubEdit(act, sub){
-  subEditRef = { actId:act.id, subId:sub.id };
-  document.getElementById('eTitle').value = sub.title;
-  document.getElementById('eDesc').value = sub.description || '';
-  document.getElementById('eTag1pct').closest('.tag1-check').style.display = 'none'; // việc con không có tag riêng
-  document.getElementById('eCategory').value = act.category;
-  document.getElementById('eDate').value = act.date || todayStr();
-  document.getElementById('eDate').disabled = false;
-  document.getElementById('eDeadlineLock').style.display = 'none';
-  document.getElementById('eStartTime').value = sub.startTime || '';
-  const dur = Number(sub.durationMinutes) > 0 ? Number(sub.durationMinutes) : null;
-  const presets = ['15','30','45','60','90','120'];
-  const eSel = document.getElementById('eDuration'), eCus = document.getElementById('eDurationCustom');
-  if(!dur){ eSel.value=''; eCus.style.display='none'; eCus.value=''; }
-  else if(presets.includes(String(dur))){ eSel.value=String(dur); eCus.style.display='none'; }
-  else { eSel.value='custom'; eCus.style.display='block'; eCus.value=dur; }
-  editingId = null; // đánh dấu đang sửa việc con, không phải việc lớn
-  document.querySelector('#editModal h2').textContent = 'Sửa việc con';
-  document.getElementById('editModal').classList.add('open');
-  autoGrowModal('editModal');
+  // Subtasks must always use their dedicated board.
+  // This prevents activity-only fields such as 1%, location and category from appearing.
+  subEditRef = null;
+  openSubtaskBoard(act, sub);
 }
 
 // ---------- Review (việc lớn hoặc việc con) ----------
