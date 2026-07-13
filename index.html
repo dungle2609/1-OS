@@ -2865,6 +2865,32 @@ function effectiveDuration(a){
   return (a.subs || []).reduce((s,x) => s + (Number(x.durationMinutes) || 0), 0);
 }
 
+// Sắp xếp việc con theo trình tự thời gian thực tế:
+// ngày sớm hơn trước; trong cùng ngày, việc có giờ xếp trước và tăng dần theo giờ.
+// Các việc chưa có ngày/giờ vẫn giữ thứ tự tạo tương đối ở phía sau.
+function sortedSubtasks(subs){
+  return (subs || [])
+    .map((sub, index) => ({sub, index}))
+    .sort((a, b) => {
+      const ad = a.sub.date || '';
+      const bd = b.sub.date || '';
+
+      if(ad && bd && ad !== bd) return ad.localeCompare(bd);
+      if(ad && !bd) return -1;
+      if(!ad && bd) return 1;
+
+      const at = a.sub.startTime || '';
+      const bt = b.sub.startTime || '';
+
+      if(at && bt && at !== bt) return at.localeCompare(bt);
+      if(at && !bt) return -1;
+      if(!at && bt) return 1;
+
+      return a.index - b.index;
+    })
+    .map(item => item.sub);
+}
+
 // Việc con có deadline khác ngày việc cha được hiển thị như một thẻ độc lập trong ngày đó.
 // Không nhân bản dữ liệu: thẻ ngày chỉ là một view tham chiếu tới subtask gốc trong activity cha.
 function crossDateSubtasksForDate(date){
@@ -3739,7 +3765,7 @@ function renderActCard(a){
   const rv = state.reviews.find(r => r.id === a.reviewId);
   const doneA = isCompleted(a);
   const eff = effectiveDuration(a);
-  const subs = a.subs || [];
+  const subs = sortedSubtasks(a.subs || []);
   const subsDone = subs.filter(s => s.completed).length;
   return `<div class="act-card ${doneA?'completed':''} ${openActs.has(a.id)?'open':''}" data-id="${a.id}">
     <div class="act-row">
@@ -4610,7 +4636,7 @@ function renderCreateSubtasks(){
   if(!list) return;
   if(!createDraftSubs.length){ list.innerHTML = ''; list.style.display = 'none'; return; }
   list.style.display = 'block';
-  list.innerHTML = createDraftSubs.map(s => `
+  list.innerHTML = sortedSubtasks(createDraftSubs).map(s => `
     <div class="board-sub-item ${s.completed?'done':''}" data-csid="${s.id}">
       <input type="checkbox" data-create-sub-check ${s.completed?'checked':''} title="Đánh dấu hoàn thành">
       <span class="bdate">${fmtShortDate(s.date)}</span>
@@ -5170,7 +5196,7 @@ function setDurationFields(prefix, val){
 }
 function renderBoardSubtasks(act){
   const list = document.getElementById('boardSubList');
-  const subs = act.subs || [];
+  const subs = sortedSubtasks(act.subs || []);
   if(!subs.length){ list.innerHTML = ''; list.style.display = 'none'; return; }
   list.style.display = 'block';
   list.innerHTML = subs.map(s => `
@@ -5698,20 +5724,51 @@ document.getElementById('reviewForm').addEventListener('submit', e => {
 });
 
 // ---------- Modals close ----------
+function closeSubtaskLayer(){
+  const subModal = document.getElementById('subtaskBoardModal');
+  if(!subModal || !subModal.classList.contains('open')) return false;
+
+  subModal.classList.remove('open');
+  subBoardRef = null;
+
+  // Keep the parent board/create modal exactly as it was behind the subtask layer.
+  const activityModal = document.getElementById('activityBoardModal');
+  const createModal = document.getElementById('createActivityModal');
+  if(activityModal?.classList.contains('open')) autoGrowModal('activityBoardModal');
+  if(createModal?.classList.contains('open')) autoGrowModal('createActivityModal');
+  return true;
+}
+
 function closeModals(){
   const subModal = document.getElementById('subtaskBoardModal');
   if(subBoardRef && subBoardRef.draft && subModal && subModal.classList.contains('open')){
-    subModal.classList.remove('open');
-    subBoardRef = null;
+    closeSubtaskLayer();
     return;
   }
   document.querySelectorAll('.modal-back').forEach(m => m.classList.remove('open'));
+  subBoardRef = null;
 }
-document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', closeModals));
+
+// User-initiated dismissal closes only the top subtask layer when a parent board
+// is still open underneath. Internal workflow calls can continue using closeModals().
+function closeTopModal(){
+  const subModal = document.getElementById('subtaskBoardModal');
+  const parentModalOpen =
+    document.getElementById('activityBoardModal')?.classList.contains('open') ||
+    document.getElementById('createActivityModal')?.classList.contains('open');
+
+  if(subModal?.classList.contains('open') && parentModalOpen){
+    closeSubtaskLayer();
+    return;
+  }
+  closeModals();
+}
+
+document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', closeTopModal));
 document.querySelectorAll('.modal-back').forEach(m =>
-  m.addEventListener('click', e => { if(e.target === m) closeModals(); })
+  m.addEventListener('click', e => { if(e.target === m) closeTopModal(); })
 );
-document.addEventListener('keydown', e => { if(e.key === 'Escape') closeModals(); });
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeTopModal(); });
 
 // ---------- Report ----------
 let reportPeriod = 'week';
