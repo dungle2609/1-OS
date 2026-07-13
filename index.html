@@ -181,8 +181,15 @@ section[data-view].active{display:block;animation:fadein .25s ease}
 .quote .quote-english{display:block;color:var(--ink);font-style:italic;font-weight:600;line-height:1.55}
 .quote .quote-latin{display:block;margin-top:4px;color:var(--cyan);font-family:Georgia,'Times New Roman',serif;font-size:12.5px;font-style:normal}
 .quote .quote-source{display:block;margin-top:3px;color:var(--muted);font-size:11.5px;font-style:normal}
-.celebrate-quote .quote-english{display:block}
-.celebrate-quote .quote-latin{display:block;margin-top:8px;color:var(--cyan);font-family:Georgia,'Times New Roman',serif;font-size:13.5px;font-style:italic}
+.quote-kicker{display:block;margin-bottom:6px;font-size:10.5px;font-weight:800;letter-spacing:.14em;color:var(--cyan);font-style:normal}
+.calendar-latin-quote{
+  border-left:3px solid var(--cyan);background:linear-gradient(135deg,var(--surface),var(--cyan-soft));
+  padding:16px 18px;margin-top:-4px;
+}
+.calendar-latin-quote .quote-english{display:block;font-family:var(--font-display);font-size:15px;font-weight:700;color:var(--ink);line-height:1.55}
+.calendar-latin-quote .quote-latin{display:block;margin-top:7px;color:var(--cyan);font-family:Georgia,'Times New Roman',serif;font-size:13px;font-style:italic}
+.calendar-latin-quote .quote-source{display:block;margin-top:5px;color:var(--muted);font-size:11.5px}
+
 
 .empty{
   text-align:center;color:var(--muted);
@@ -217,6 +224,26 @@ section[data-view].active{display:block;animation:fadein .25s ease}
 .tb-item .tb-v{font-family:var(--font-display);font-weight:800;font-size:27px;color:#fff;line-height:1.1}
 .tb-item .tb-v.warn{color:#FFC96B}
 .tb-item .tb-l{font-size:12px;color:#9FC5E8;font-weight:500;margin-top:2px}
+.daypart-list{gap:8px!important;min-width:210px!important}
+.daypart-row{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:9px 10px;border-radius:12px;
+  background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.13);
+}
+.daypart-row.current{background:rgba(255,255,255,.17);border-color:rgba(255,255,255,.28);box-shadow:0 0 0 2px rgba(252,211,77,.12)}
+.daypart-row.past{opacity:.58}
+.daypart-name{display:flex;flex-direction:column;min-width:0}
+.daypart-name span{font-size:12.5px;font-weight:800;color:#fff}
+.daypart-name small,.daypart-value small{font-size:10.5px;color:#C9E2F5;font-weight:500;white-space:nowrap}
+.daypart-value{text-align:right;display:flex;flex-direction:column;align-items:flex-end}
+.daypart-value b{font-family:var(--font-display);font-size:17px;line-height:1.1;color:#fff}
+.daypart-value b.warn{color:#FFC96B}
+.daypart-summary{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;
+  padding:2px 2px 0;color:#C9E2F5;font-size:10.5px;font-weight:600;
+}
+.daypart-summary b{color:#fff;font-size:11.5px}
+
 
 /* ----- Hero: 2 phần (budget thời gian | cây cam) ----- */
 .hero-body{
@@ -349,6 +376,26 @@ section[data-view].active{display:block;animation:fadein .25s ease}
 .repeat-daily-check small{font-size:11.5px;font-weight:600;color:var(--muted);white-space:nowrap}
 .repeat-daily-check:has(input:checked){background:var(--blue-soft);border-color:transparent;color:var(--blue)}
 .repeat-daily-check:has(input:checked) span{color:var(--blue)}
+.repeat-controls{margin-bottom:14px}
+.repeat-controls .repeat-daily-check{margin-bottom:0}
+.repeat-weekdays{
+  margin-top:8px;padding:11px;border:1px solid var(--line);border-radius:14px;
+  background:var(--surface-2);
+}
+.repeat-weekdays[hidden]{display:none!important}
+.repeat-weekdays-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;font-size:12px;font-weight:800;color:var(--muted)}
+.repeat-weekdays-head button{border:none;background:transparent;color:var(--blue);font-size:11.5px;font-weight:800;padding:3px 5px}
+.repeat-day-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.repeat-day-grid button{
+  min-width:0;height:34px;border:1px solid var(--line);border-radius:10px;
+  background:var(--surface);color:var(--muted);font-size:12px;font-weight:800;
+}
+.repeat-day-grid button.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.repeat-summary{margin-top:8px;font-size:11.5px;color:var(--muted);font-weight:600}
+[data-theme="dark"] .repeat-weekdays{background:#2E2318;border-color:#755532}
+[data-theme="dark"] .repeat-day-grid button{background:#21170F;border-color:#755532;color:#E5D0B3}
+[data-theme="dark"] .repeat-day-grid button.on{background:#78D08B;border-color:#78D08B;color:#082016}
+
 .quick-inline{width:auto;min-width:112px;border-radius:99px!important;background:var(--surface)!important}
 .location-toggle{display:inline-flex;border:1px solid var(--line);background:var(--surface-2);border-radius:99px;padding:3px;gap:3px}
 .location-toggle button{border:none;background:transparent;color:var(--muted);border-radius:99px;padding:5px 9px;font-size:12.5px;font-weight:800}
@@ -1161,6 +1208,10 @@ section[data-view].active{display:block;animation:fadein .25s ease}
     min-height:200px;
   }
   .tree-svg{max-height:190px}
+  .hero-budget .tb-dash{width:100%;align-items:flex-start}
+  .hero-budget .ring{margin:0 auto}
+  .hero-budget .daypart-list{width:100%}
+  .repeat-day-grid{grid-template-columns:repeat(4,1fr)}
   .theme-fab{
     display:flex!important;position:fixed;top:14px;right:14px;z-index:41;
     width:38px;height:38px;border-radius:99px;align-items:center;justify-content:center;
@@ -1431,9 +1482,20 @@ input[type="time"]::-webkit-calendar-picker-indicator:hover{opacity:1;}
                 </svg>
                 <div class="center"><div class="big" id="tbPlanned">0p</div><div class="small">KẾ HOẠCH</div></div>
               </div>
-              <div class="tb-nums">
-                <div class="tb-item"><div class="tb-v" id="tbLeft">24 giờ</div><div class="tb-l">Còn lại trong ngày</div></div>
-                <div class="tb-item"><div class="tb-v" id="tbCount">0</div><div class="tb-l">Việc có block thời gian</div></div>
+              <div class="tb-nums daypart-list">
+                <div class="daypart-row" data-daypart="morning">
+                  <div class="daypart-name"><span>🌤 Sáng</span><small>00:00–12:00</small></div>
+                  <div class="daypart-value"><b id="tbMorningLeft">12g</b><small id="tbMorningPlan">0p đã lên block</small></div>
+                </div>
+                <div class="daypart-row" data-daypart="afternoon">
+                  <div class="daypart-name"><span>☀️ Chiều</span><small>12:01–18:00</small></div>
+                  <div class="daypart-value"><b id="tbAfternoonLeft">6g</b><small id="tbAfternoonPlan">0p đã lên block</small></div>
+                </div>
+                <div class="daypart-row" data-daypart="evening">
+                  <div class="daypart-name"><span>🌙 Tối</span><small>18:01–23:59</small></div>
+                  <div class="daypart-value"><b id="tbEveningLeft">6g</b><small id="tbEveningPlan">0p đã lên block</small></div>
+                </div>
+                <div class="daypart-summary"><span><b id="tbCount">0</b> việc có block</span><span id="tbUnscheduledWrap"><b id="tbUnscheduled">0</b> chưa đặt giờ</span></div>
               </div>
             </div>
           </div>
@@ -1772,7 +1834,22 @@ input[type="time"]::-webkit-calendar-picker-indicator:hover{opacity:1;}
         <div class="f-group"><label>Giờ</label><input type="time" id="cStartTime"></div>
         <div class="f-group"><label>Block</label><select id="cDuration"><option value="">Không đặt</option><option value="15">15 phút</option><option value="30">30 phút</option><option value="45">45 phút</option><option value="60">60 phút</option><option value="90">90 phút</option><option value="120">120 phút</option><option value="custom">Tùy chỉnh…</option></select><input type="number" id="cDurationCustom" min="1" max="1440" placeholder="phút" style="display:none;margin-top:8px"></div>
       </div>
-      <label class="repeat-daily-check"><input type="checkbox" id="cRepeatDaily"> <span>↻ Lặp lại hằng ngày</span><small>Tự sinh mỗi ngày theo giờ & block này</small></label>
+      <div class="repeat-controls" id="cRepeatControls">
+        <label class="repeat-daily-check"><input type="checkbox" id="cRepeatDaily"> <span>↻ Lặp lại theo ngày trong tuần</span><small>Chọn một hoặc nhiều ngày</small></label>
+        <div class="repeat-weekdays" id="cRepeatWeekdays" hidden>
+          <div class="repeat-weekdays-head"><span>Lặp vào</span><button type="button" id="cRepeatAllDays">Chọn cả tuần</button></div>
+          <div class="repeat-day-grid" role="group" aria-label="Chọn ngày lặp lại">
+            <button type="button" data-repeat-day="1">T2</button>
+            <button type="button" data-repeat-day="2">T3</button>
+            <button type="button" data-repeat-day="3">T4</button>
+            <button type="button" data-repeat-day="4">T5</button>
+            <button type="button" data-repeat-day="5">T6</button>
+            <button type="button" data-repeat-day="6">T7</button>
+            <button type="button" data-repeat-day="0">CN</button>
+          </div>
+          <div class="repeat-summary" id="cRepeatSummary">Chưa chọn ngày lặp.</div>
+        </div>
+      </div>
       <div class="f-group create-subtasks">
         <label>Việc con</label>
         <div class="board-sub-list" id="createSubList"></div>
@@ -2044,8 +2121,112 @@ const FOCUS_SUGGEST = {
   'Khác':'Chọn một hành vi nhỏ, một tình huống cụ thể, và một bằng chứng quan sát được.'
 };
 
-// 100 Latin reflections about time, life and the wider view — English translation shown first
+// Original daily inspiration collection — used on Today and celebration screens
 const DAILY_QUOTES = [
+  {q:"The journey of a thousand miles begins with one step.", a:"Lao Tzu"},
+  {q:"Nature does not hurry, yet everything is accomplished.", a:"Lao Tzu"},
+  {q:"It does not matter how slowly you go as long as you do not stop.", a:"Confucius"},
+  {q:"The man who moves a mountain begins by carrying away small stones.", a:"Confucius"},
+  {q:"We are what we repeatedly do. Excellence, then, is not an act, but a habit.", a:"Aristotle"},
+  {q:"Patience is bitter, but its fruit is sweet.", a:"Aristotle"},
+  {q:"Well begun is half done.", a:"Aristotle"},
+  {q:"No great thing is created suddenly.", a:"Epictetus"},
+  {q:"First say to yourself what you would be; and then do what you have to do.", a:"Epictetus"},
+  {q:"The impediment to action advances action. What stands in the way becomes the way.", a:"Marcus Aurelius"},
+  {q:"You have power over your mind, not outside events.", a:"Marcus Aurelius"},
+  {q:"Waste no more time arguing what a good man should be. Be one.", a:"Marcus Aurelius"},
+  {q:"Luck is what happens when preparation meets opportunity.", a:"Seneca"},
+  {q:"We suffer more often in imagination than in reality.", a:"Seneca"},
+  {q:"He who is brave is free.", a:"Seneca"},
+  {q:"Lost time is never found again.", a:"Benjamin Franklin"},
+  {q:"Energy and persistence conquer all things.", a:"Benjamin Franklin"},
+  {q:"Little strokes fell great oaks.", a:"Benjamin Franklin"},
+  {q:"By failing to prepare, you are preparing to fail.", a:"Benjamin Franklin"},
+  {q:"Genius is one percent inspiration and ninety-nine percent perspiration.", a:"Thomas Edison"},
+  {q:"I have not failed. I have just found 10,000 ways that will not work.", a:"Thomas Edison"},
+  {q:"Many of life\u2019s failures are people who did not realize how close they were to success.", a:"Thomas Edison"},
+  {q:"I am still learning.", a:"Michelangelo"},
+  {q:"Great things are done by a series of small things brought together.", a:"Vincent van Gogh"},
+  {q:"What would life be if we had no courage to attempt anything?", a:"Vincent van Gogh"},
+  {q:"Learning never exhausts the mind.", a:"Leonardo da Vinci"},
+  {q:"Knowing is not enough; we must apply. Willing is not enough; we must do.", a:"Johann Wolfgang von Goethe"},
+  {q:"Whatever you can do, or dream you can, begin it.", a:"Johann Wolfgang von Goethe"},
+  {q:"Give me six hours to chop down a tree and I will spend the first four sharpening the axe.", a:"Abraham Lincoln"},
+  {q:"I walk slowly, but I never walk backward.", a:"Abraham Lincoln"},
+  {q:"Success is not final, failure is not fatal: it is the courage to continue that counts.", a:"Winston Churchill"},
+  {q:"Never, never, never give up.", a:"Winston Churchill"},
+  {q:"Continuous effort, not strength or intelligence, is the key to unlocking our potential.", a:"Winston Churchill"},
+  {q:"Do what you can, with what you have, where you are.", a:"Theodore Roosevelt"},
+  {q:"Believe you can and you are halfway there.", a:"Theodore Roosevelt"},
+  {q:"It always seems impossible until it is done.", a:"Nelson Mandela"},
+  {q:"The greatest glory in living lies not in never falling, but in rising every time we fall.", a:"Nelson Mandela"},
+  {q:"The future depends on what you do today.", a:"Mahatma Gandhi"},
+  {q:"Be the change that you wish to see in the world.", a:"Mahatma Gandhi"},
+  {q:"Strength does not come from physical capacity. It comes from an indomitable will.", a:"Mahatma Gandhi"},
+  {q:"If you cannot fly, then run; if you cannot run, then walk; if you cannot walk, then crawl.", a:"Martin Luther King Jr."},
+  {q:"Not all of us can do great things. But we can do small things with great love.", a:"Mother Teresa"},
+  {q:"Be faithful in small things because it is in them that your strength lies.", a:"Mother Teresa"},
+  {q:"Do the best you can until you know better. Then when you know better, do better.", a:"Maya Angelou"},
+  {q:"Nothing will work unless you do.", a:"Maya Angelou"},
+  {q:"What you get by achieving your goals is not as important as what you become.", a:"Zig Ziglar"},
+  {q:"You do not have to be great to start, but you have to start to be great.", a:"Zig Ziglar"},
+  {q:"Motivation gets you going and habit gets you there.", a:"Zig Ziglar"},
+  {q:"Discipline is the bridge between goals and accomplishment.", a:"Jim Rohn"},
+  {q:"Success is nothing more than a few simple disciplines, practiced every day.", a:"Jim Rohn"},
+  {q:"Do not wish it were easier. Wish you were better.", a:"Jim Rohn"},
+  {q:"Either you run the day or the day runs you.", a:"Jim Rohn"},
+  {q:"You will never change your life until you change something you do daily.", a:"John C. Maxwell"},
+  {q:"Small disciplines repeated with consistency every day lead to great achievements.", a:"John C. Maxwell"},
+  {q:"The secret of getting ahead is getting started.", a:"Mark Twain"},
+  {q:"Continuous improvement is better than delayed perfection.", a:"Mark Twain"},
+  {q:"The way to get started is to quit talking and begin doing.", a:"Walt Disney"},
+  {q:"Action is the foundational key to all success.", a:"Pablo Picasso"},
+  {q:"The most effective way to do it, is to do it.", a:"Amelia Earhart"},
+  {q:"You miss 100 percent of the shots you do not take.", a:"Wayne Gretzky"},
+  {q:"A goal without a plan is just a wish.", a:"Antoine de Saint-Exup\u00e9ry"},
+  {q:"What gets measured gets improved.", a:"Peter Drucker"},
+  {q:"The best way to predict the future is to create it.", a:"Peter Drucker"},
+  {q:"There is nothing so useless as doing efficiently what should not be done at all.", a:"Peter Drucker"},
+  {q:"The main thing is to keep the main thing the main thing.", a:"Stephen Covey"},
+  {q:"Begin with the end in mind.", a:"Stephen Covey"},
+  {q:"Do not prioritize your schedule; schedule your priorities.", a:"Stephen Covey"},
+  {q:"If you do not prioritize your life, someone else will.", a:"Greg McKeown"},
+  {q:"Focus is about saying no.", a:"Steve Jobs"},
+  {q:"Stay hungry. Stay foolish.", a:"Steve Jobs"},
+  {q:"Someone is sitting in the shade today because someone planted a tree a long time ago.", a:"Warren Buffett"},
+  {q:"The chains of habit are too light to be felt until they are too heavy to be broken.", a:"Warren Buffett"},
+  {q:"The difference between successful people and really successful people is that really successful people say no to almost everything.", a:"Warren Buffett"},
+  {q:"Compound interest is the eighth wonder of the world.", a:"Albert Einstein"},
+  {q:"It is not that I am so smart. It is just that I stay with problems longer.", a:"Albert Einstein"},
+  {q:"Whether you think you can, or you think you cannot, you are right.", a:"Henry Ford"},
+  {q:"Nothing is particularly hard if you divide it into small jobs.", a:"Henry Ford"},
+  {q:"Obstacles are those frightful things you see when you take your eyes off your goal.", a:"Henry Ford"},
+  {q:"I fear not the man who has practiced 10,000 kicks once, but the man who has practiced one kick 10,000 times.", a:"Bruce Lee"},
+  {q:"Absorb what is useful, discard what is not, add what is uniquely your own.", a:"Bruce Lee"},
+  {q:"Do not count the days; make the days count.", a:"Muhammad Ali"},
+  {q:"I hated every minute of training, but I said, do not quit.", a:"Muhammad Ali"},
+  {q:"Success is no accident. It is hard work, perseverance, learning, sacrifice, and love of what you do.", a:"Pel\u00e9"},
+  {q:"Great things come from hard work and perseverance. No excuses.", a:"Kobe Bryant"},
+  {q:"I have failed over and over and over again in my life. And that is why I succeed.", a:"Michael Jordan"},
+  {q:"Some people want it to happen, some wish it would happen, others make it happen.", a:"Michael Jordan"},
+  {q:"Perfection is not attainable, but if we chase perfection we can catch excellence.", a:"Vince Lombardi"},
+  {q:"Winners never quit and quitters never win.", a:"Vince Lombardi"},
+  {q:"Do not let what you cannot do interfere with what you can do.", a:"John Wooden"},
+  {q:"Success is peace of mind, knowing you made the effort to become your best.", a:"John Wooden"},
+  {q:"Grit is passion and perseverance for very long-term goals.", a:"Angela Duckworth"},
+  {q:"Effort counts twice.", a:"Angela Duckworth"},
+  {q:"Becoming is better than being.", a:"Carol Dweck"},
+  {q:"Habits are the compound interest of self-improvement.", a:"James Clear"},
+  {q:"Every action you take is a vote for the type of person you wish to become.", a:"James Clear"},
+  {q:"You do not rise to the level of your goals. You fall to the level of your systems.", a:"James Clear"},
+  {q:"Small habits do not add up. They compound.", a:"James Clear"},
+  {q:"We do not learn from experience. We learn from reflecting on experience.", a:"John Dewey"},
+  {q:"Between stimulus and response there is a space. In that space is our power to choose.", a:"Viktor Frankl"},
+  {q:"Fall seven times and stand up eight.", a:"Japanese Proverb"}
+];
+
+// 100 Latin reflections — used only inside the Calendar tab
+const LATIN_QUOTES = [
   {"latin": "Tempus fugit.", "q": "Time flies.", "a": "Virgil"},
   {"latin": "Carpe diem.", "q": "Seize the day.", "a": "Horace"},
   {"latin": "Memento mori.", "q": "Remember that you must die.", "a": "Traditional Latin maxim"},
@@ -2153,10 +2334,15 @@ function randomCelebrationQuote(){
   return CELEBRATION_QUOTES[Math.floor(Math.random() * CELEBRATION_QUOTES.length)];
 }
 
-function dailyQuote(dateStr){
+function quoteIndexForDate(dateStr, length){
   const [y,m,d] = dateStr.split('-').map(Number);
-  const idx = (y * 372 + m * 31 + d) % DAILY_QUOTES.length;
-  return DAILY_QUOTES[idx];
+  return (y * 372 + m * 31 + d) % Math.max(1, length);
+}
+function dailyQuote(dateStr){
+  return DAILY_QUOTES[quoteIndexForDate(dateStr, DAILY_QUOTES.length)];
+}
+function calendarLatinQuote(dateStr){
+  return LATIN_QUOTES[quoteIndexForDate(dateStr, LATIN_QUOTES.length)];
 }
 
 // ---------- Date helpers ----------
@@ -2168,6 +2354,10 @@ const addDays = (str, n) => {
   const [y,m,d] = str.split('-').map(Number);
   const dt = new Date(y, m-1, d + n);
   return `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`;
+};
+const weekdayIndexFromDate = (str) => {
+  const [y,m,d] = String(str || todayStr()).split('-').map(Number);
+  return new Date(y, m-1, d).getDay();
 };
 const daysInMonthOf = (str) => {
   const [y,m] = str.split('-').map(Number);
@@ -2227,7 +2417,11 @@ const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,7
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function quoteMarkup(quote){
   if(!quote) return '';
-  return `<span class="quote-english">“${esc(quote.q)}”</span><span class="quote-latin">${esc(quote.latin || '')}</span><span class="quote-source">— ${esc(quote.a || 'Latin wisdom')}</span>`;
+  return `<span class="quote-english">“${esc(quote.q)}”</span><span class="quote-source">— ${esc(quote.a || '')}</span>`;
+}
+function latinQuoteMarkup(quote){
+  if(!quote) return '';
+  return `<span class="quote-kicker">LATIN PERSPECTIVE</span><span class="quote-english">“${esc(quote.q)}”</span><span class="quote-latin">${esc(quote.latin || '')}</span><span class="quote-source">— ${esc(quote.a || 'Latin wisdom')}</span>`;
 }
 
 // Ngày đang xem trên dashboard (mặc định hôm nay, không lưu vào state)
@@ -2306,6 +2500,10 @@ function normalizeRecurringState(){
   state.recurringTasks.forEach(t => {
     if(t.active === undefined) t.active = true;
     if(!t.startDate) t.startDate = todayStr();
+    // Existing recurring tasks were daily. Missing weekDays therefore means all seven days.
+    if(!Array.isArray(t.weekDays) || !t.weekDays.length) t.weekDays = [0,1,2,3,4,5,6];
+    t.weekDays = [...new Set(t.weekDays.map(Number).filter(d => d >= 0 && d <= 6))];
+    if(!t.weekDays.length) t.weekDays = [0,1,2,3,4,5,6];
     if(!Array.isArray(t.subs)) t.subs = [];
     t.subs.forEach(s => {
       if(s.dateOffset === undefined) s.dateOffset = 0;
@@ -2313,10 +2511,11 @@ function normalizeRecurringState(){
     });
   });
 }
-function buildRecurringTemplateFromActivity(act){
+function buildRecurringTemplateFromActivity(act, weekDays=[0,1,2,3,4,5,6]){
   const baseDate = act.date || todayStr();
   return {
     id:uid(), active:true, createdAt:new Date().toISOString(), startDate:baseDate,
+    weekDays:[...new Set((weekDays || []).map(Number).filter(d => d >= 0 && d <= 6))],
     title:act.title || '', description:act.description || '', location:act.location || 'company',
     category:act.category || 'Công việc', startTime:act.startTime || null,
     durationMinutes:Number(act.durationMinutes) || null,
@@ -2356,6 +2555,8 @@ function ensureRecurringTasksForDate(date, persist=true){
   state.recurringTasks.forEach(t => {
     if(!t || t.active === false || !t.id) return;
     if(t.startDate && date < t.startDate) return;
+    const repeatDays = Array.isArray(t.weekDays) && t.weekDays.length ? t.weekDays : [0,1,2,3,4,5,6];
+    if(!repeatDays.includes(weekdayIndexFromDate(date))) return;
     if(hasRecurringSkip(t.id, date)) return;
     const exists = (state.activities || []).some(a => a.recurringId === t.id && a.date === date);
     if(exists) return;
@@ -2589,59 +2790,92 @@ function reviewStreak(){
   return n;
 }
 
-// ---------- Time budget (theo thời gian thực) ----------
-function minutesLeftToday(){
-  const n = new Date();
-  return Math.max(0, (23*60 + 59) - (n.getHours()*60 + n.getMinutes()));
+// ---------- Time budget (theo từng buổi, cập nhật theo thời gian thực) ----------
+const DAYPARTS = [
+  {key:'Morning', label:'Sáng', start:0, end:721},
+  {key:'Afternoon', label:'Chiều', start:721, end:1081},
+  {key:'Evening', label:'Tối', start:1081, end:1440}
+];
+function timeToMinutes(value){
+  if(!value || !/^\d{2}:\d{2}$/.test(value)) return null;
+  const [h,m] = value.split(':').map(Number);
+  if(h < 0 || h > 23 || m < 0 || m > 59) return null;
+  return h*60+m;
 }
-
+function currentMinuteOfDay(){
+  const n = new Date();
+  return n.getHours()*60+n.getMinutes();
+}
+function itemPlannedOverlap(item, date, part, fromMinute=null){
+  const duration = dayItemDuration(item, date);
+  const start = timeToMinutes(item.startTime);
+  if(!(duration > 0) || start === null) return 0;
+  const itemStart = fromMinute === null ? start : Math.max(start, fromMinute);
+  const itemEnd = Math.min(1440, start + duration);
+  return Math.max(0, Math.min(itemEnd, part.end) - Math.max(itemStart, part.start));
+}
 function renderTimeBudget(){
   const t = viewDate;
   const today = todayStr();
   const items = dayDisplayItems(t);
   const withDur = items.filter(item => dayItemDuration(item, t) > 0);
   const planned = withDur.reduce((sum,item) => sum + dayItemDuration(item, t), 0);
+  const unscheduled = withDur.filter(item => timeToMinutes(item.startTime) === null);
+  const nowMinute = currentMinuteOfDay();
 
   document.getElementById('tbPlanned').textContent = fmtMinsShort(planned);
   document.getElementById('tbRing').style.strokeDashoffset = 414.7 * (1 - Math.min(planned/1440, 1));
   document.getElementById('tbCount').textContent = withDur.length;
+  document.getElementById('tbUnscheduled').textContent = unscheduled.length;
+  document.getElementById('tbUnscheduledWrap').style.display = unscheduled.length ? '' : 'none';
 
-  const tbLeft = document.getElementById('tbLeft');
-  const tbLbl = tbLeft.nextElementSibling;
+  DAYPARTS.forEach(part => {
+    const row = document.querySelector(`[data-daypart="${part.key.toLowerCase()}"]`);
+    const leftEl = document.getElementById(`tb${part.key}Left`);
+    const planEl = document.getElementById(`tb${part.key}Plan`);
+    const totalPlanned = items.reduce((sum,item) => sum + itemPlannedOverlap(item,t,part), 0);
+    let clockAvailable = part.end - part.start;
+    let remainingPlan = totalPlanned;
+    let isPast = false;
+    let isCurrent = false;
 
-  if(planned > 1440){
-    tbLeft.textContent = `Vượt ${fmtMins(planned - 1440)}`;
-    tbLeft.classList.add('warn');
-    tbLbl.textContent = '⚠️ Kế hoạch vượt quá 24h';
-    return;
-  }
-
-  if(t < today){
-    // ngày đã qua
-    tbLeft.textContent = '—';
-    tbLeft.classList.remove('warn');
-    tbLbl.textContent = 'Ngày đã kết thúc';
-  }else if(t === today){
-    // hôm nay: tính theo thời gian thực còn lại đến 23:59,
-    // trừ đi các block CHƯA hoàn thành (block đã done không chiếm thời gian nữa)
-    const real = minutesLeftToday();
-    const todo = withDur.filter(item => !isCompleted(item)).reduce((sum,item) => sum + dayItemDuration(item, t), 0);
-    const free = real - todo;
-    if(free < 0){
-      tbLeft.textContent = `Thiếu ${fmtMins(-free)}`;
-      tbLeft.classList.add('warn');
-      tbLbl.textContent = `⚠️ Kế hoạch còn lại vượt quá ${fmtMins(real)} thực tế đến 23:59`;
-    }else{
-      tbLeft.textContent = fmtMins(free);
-      tbLeft.classList.remove('warn');
-      tbLbl.textContent = 'Còn trống thực tế đến 23:59';
+    if(t < today){
+      clockAvailable = 0;
+      remainingPlan = 0;
+      isPast = true;
+    }else if(t === today){
+      if(nowMinute >= part.end){
+        clockAvailable = 0;
+        remainingPlan = 0;
+        isPast = true;
+      }else{
+        const effectiveStart = Math.max(nowMinute, part.start);
+        clockAvailable = Math.max(0, part.end - effectiveStart);
+        isCurrent = nowMinute >= part.start && nowMinute < part.end;
+        remainingPlan = items
+          .filter(item => !isCompleted(item))
+          .reduce((sum,item) => sum + itemPlannedOverlap(item,t,part,effectiveStart), 0);
+      }
     }
-  }else{
-    // ngày tương lai: trọn 24h
-    tbLeft.textContent = fmtMins(1440 - planned);
-    tbLeft.classList.remove('warn');
-    tbLbl.textContent = 'Còn lại trong ngày';
-  }
+
+    const free = clockAvailable - remainingPlan;
+    if(t < today || isPast){
+      leftEl.textContent = '—';
+      leftEl.classList.remove('warn');
+    }else if(free < 0){
+      leftEl.textContent = `Thiếu ${fmtMinsShort(-free)}`;
+      leftEl.classList.add('warn');
+    }else{
+      leftEl.textContent = fmtMinsShort(free);
+      leftEl.classList.remove('warn');
+    }
+
+    planEl.textContent = totalPlanned
+      ? `${fmtMinsShort(totalPlanned)} đã lên block`
+      : 'Chưa có block';
+    row?.classList.toggle('past', isPast);
+    row?.classList.toggle('current', isCurrent);
+  });
 }
 
 // Tự cập nhật mỗi phút khi đang xem hôm nay (chỉ chạm vào số liệu, không render lại form)
@@ -2867,7 +3101,8 @@ function renderCalendar(){
       <div class="calendar-metric"><div class="cm-v ${st.unfinishedPast?'warn':''}">${st.unfinishedPast}</div><div class="cm-l">Việc quá khứ chưa xong</div></div>
     </div>
     <div class="calendar-progress"><i style="width:${st.pct}%"></i></div>
-  </div>`;
+  </div>
+  <div class="card calendar-latin-quote">${latinQuoteMarkup(calendarLatinQuote(calendarSelectedDate))}</div>`;
   grid.innerHTML=calendarMode==='week'?calendarWeekHtml():calendarMode==='month'?calendarMonthHtml():calendarYearHtml();
   grid.querySelectorAll('[data-cal-date]').forEach(b=>b.addEventListener('click',()=>calendarSelectDate(b.dataset.calDate)));
   grid.querySelectorAll('[data-cal-month]').forEach(b=>b.addEventListener('click',()=>{
@@ -2961,7 +3196,7 @@ function showCelebration(date, st){
   const msg = document.getElementById('celebrateMsg');
   const box = document.getElementById('celebrateBox');
   const quote = randomCelebrationQuote();
-  msg.innerHTML = `<span class="celebrate-quote"><span class="quote-english">“${esc(quote.q)}”</span><span class="quote-latin">${esc(quote.latin || '')}</span><small>— ${esc(quote.a)}</small></span>`;
+  msg.innerHTML = `<span class="celebrate-quote">“${esc(quote.q)}”<small>— ${esc(quote.a)}</small></span>`;
   box.querySelectorAll('.confetti').forEach(x => x.remove());
   const colors = ['#2F8F5B','#F59E0B','#FCD34D','#8B5A32','#78D08B'];
   for(let i=0;i<26;i++){
@@ -3260,6 +3495,7 @@ function renderActCard(a){
     <div class="act-details">
       <div class="row" style="gap:8px;flex-wrap:wrap">
         ${a.tag1pct ? '<span class="chip chip-1pct">🌱 Việc chăm cây</span>' : ''}
+        ${a.recurringId ? `<span class="chip">↻ ${esc(recurringScheduleText(a))}</span>` : ''}
         <span class="chip chip-cat">${esc(a.category)}</span>
         ${eff ? `<span class="chip chip-time">${fmtMins(eff)}${!Number(a.durationMinutes) && subs.length ? ' (từ việc con)' : ''}</span>` : ''}
         ${rv ? '<span class="chip" style="background:var(--ok-soft);color:var(--ok);border-color:transparent">Đã review</span>' : ''}
@@ -3459,7 +3695,7 @@ function createOnePctFromMistake(m){
   document.getElementById('cTitle').value = draft.title;
   document.getElementById('cDesc').value = draft.description;
   document.getElementById('cTag1pct').checked = true;
-  const repeatBox = document.querySelector('#createActivityModal .repeat-daily-check');
+  const repeatBox = document.getElementById('cRepeatControls');
   if(repeatBox) repeatBox.style.display = 'none';
   document.getElementById('cDate').value = draft.date;
   document.getElementById('cCategory').value = draft.category;
@@ -3783,6 +4019,48 @@ document.getElementById('dayPick').addEventListener('change', e => {
 let creatingLocation = 'company';
 let createDraftSubs = [];
 let createDraftMeta = null;
+const REPEAT_DAY_LABELS = {1:'Thứ 2',2:'Thứ 3',3:'Thứ 4',4:'Thứ 5',5:'Thứ 6',6:'Thứ 7',0:'Chủ nhật'};
+function selectedRepeatWeekdays(){
+  return [...document.querySelectorAll('#cRepeatWeekdays [data-repeat-day].on')]
+    .map(b => Number(b.dataset.repeatDay));
+}
+function setSelectedRepeatWeekdays(days=[]){
+  const picked = new Set((days || []).map(Number));
+  document.querySelectorAll('#cRepeatWeekdays [data-repeat-day]').forEach(b => {
+    b.classList.toggle('on', picked.has(Number(b.dataset.repeatDay)));
+  });
+  updateRepeatSummary();
+}
+function repeatScheduleLabel(days){
+  const normalized = [...new Set((days || []).map(Number))];
+  if(normalized.length === 7) return 'hằng ngày';
+  const order = [1,2,3,4,5,6,0];
+  return order.filter(d => normalized.includes(d)).map(d => REPEAT_DAY_LABELS[d]).join(', ');
+}
+function updateRepeatSummary(){
+  const box = document.getElementById('cRepeatWeekdays');
+  const summary = document.getElementById('cRepeatSummary');
+  const checked = !!document.getElementById('cRepeatDaily')?.checked;
+  if(box) box.hidden = !checked;
+  if(!summary) return;
+  const days = selectedRepeatWeekdays();
+  summary.textContent = days.length ? `Sẽ lặp vào: ${repeatScheduleLabel(days)}.` : 'Chưa chọn ngày lặp.';
+}
+function recurringTemplateForActivity(act){
+  return act?.recurringId ? (state.recurringTasks || []).find(t => t.id === act.recurringId) : null;
+}
+function recurringScheduleText(act){
+  const template = recurringTemplateForActivity(act);
+  return template ? repeatScheduleLabel(template.weekDays || [0,1,2,3,4,5,6]) : '';
+}
+function nextRepeatDateOnOrAfter(startDate, days){
+  const selected = new Set((days || []).map(Number));
+  for(let offset=0; offset<7; offset++){
+    const candidate = addDays(startDate, offset);
+    if(selected.has(weekdayIndexFromDate(candidate))) return candidate;
+  }
+  return startDate;
+}
 function renderCreateSubtasks(){
   const list = document.getElementById('createSubList');
   if(!list) return;
@@ -3815,7 +4093,9 @@ function openCreateActivity(loc='company'){
   renderCreateSubtasks();
   document.getElementById('cTag1pct').checked = false;
   document.getElementById('cRepeatDaily').checked = false;
-  const repeatBox = document.querySelector('#createActivityModal .repeat-daily-check');
+  setSelectedRepeatWeekdays([]);
+  updateRepeatSummary();
+  const repeatBox = document.getElementById('cRepeatControls');
   if(repeatBox) repeatBox.style.display = '';
   const cLoc = document.getElementById('cLocation');
   if(cLoc) cLoc.value = loc;
@@ -3859,22 +4139,53 @@ document.getElementById('createSubList').addEventListener('click', e => {
   }
   openDraftSubtaskBoard(sub);
 });
+document.getElementById('cRepeatDaily').addEventListener('change', e => {
+  if(e.target.checked && !selectedRepeatWeekdays().length){
+    setSelectedRepeatWeekdays([weekdayIndexFromDate(document.getElementById('cDate').value || viewDate)]);
+  }
+  updateRepeatSummary();
+});
+document.getElementById('cRepeatWeekdays').addEventListener('click', e => {
+  const day = e.target.closest('[data-repeat-day]');
+  if(day){
+    day.classList.toggle('on');
+    updateRepeatSummary();
+  }
+});
+document.getElementById('cRepeatAllDays').addEventListener('click', () => {
+  setSelectedRepeatWeekdays([1,2,3,4,5,6,0]);
+});
+document.getElementById('cDate').addEventListener('change', () => {
+  if(document.getElementById('cRepeatDaily').checked && !selectedRepeatWeekdays().length){
+    setSelectedRepeatWeekdays([weekdayIndexFromDate(document.getElementById('cDate').value || viewDate)]);
+  }
+});
+
 document.getElementById('createActivityForm').addEventListener('submit', e => {
   e.preventDefault();
   const title = document.getElementById('cTitle').value.trim();
   if(!title){ document.getElementById('cTitle').focus(); return; }
   const loc = creatingLocation || 'company';
-  const date = document.getElementById('cDate').value || viewDate;
+  const requestedDate = document.getElementById('cDate').value || viewDate;
   const meta = createDraftMeta;
+  const isOnePct = meta?.forceOnePct ? true : document.getElementById('cTag1pct').checked;
+  const repeatDaily = document.getElementById('cRepeatDaily').checked && !isOnePct;
+  const repeatDays = repeatDaily ? selectedRepeatWeekdays() : [];
+  if(repeatDaily && !repeatDays.length){
+    toast('Hãy chọn ít nhất một ngày trong tuần để lặp lại.');
+    return;
+  }
+  const date = repeatDaily ? nextRepeatDateOnOrAfter(requestedDate, repeatDays) : requestedDate;
+  const dateShift = dateDiffDays(requestedDate, date);
   const act = {
     id:uid(), date, title, location:loc,
     description:document.getElementById('cDesc').value.trim(),
-    tag1pct: meta?.forceOnePct ? true : document.getElementById('cTag1pct').checked,
+    tag1pct:isOnePct,
     category:document.getElementById('cCategory').value || 'Công việc',
     startTime:document.getElementById('cStartTime').value || null,
     durationMinutes:readDuration('cDuration','cDurationCustom'),
     completed:false,
-    subs:createDraftSubs.map(s => ({...s})),
+    subs:createDraftSubs.map(sub => ({...sub, date:addDays(sub.date || requestedDate, dateShift)})),
     status:'todo', reviewId:null
   };
   if(meta){
@@ -3883,9 +4194,8 @@ document.getElementById('createActivityForm').addEventListener('submit', e => {
     act.fromActivityTitle = meta.fromActivityTitle || null;
     act.fromMistakeId = meta.fromMistakeId || null;
   }
-  const repeatDaily = document.getElementById('cRepeatDaily').checked && !act.tag1pct;
   if(repeatDaily){
-    const tmpl = buildRecurringTemplateFromActivity(act);
+    const tmpl = buildRecurringTemplateFromActivity(act, repeatDays);
     act.recurringId = tmpl.id;
     act.generatedFromRecurring = true;
     state.recurringTasks.push(tmpl);
@@ -3901,7 +4211,11 @@ document.getElementById('createActivityForm').addEventListener('submit', e => {
   closeModals();
   openDayView(date);
   const locLabel = getColumnSetting(loc).label;
-  toast(meta?.type === 'mistakeOnePct' ? 'Đã tạo việc 1% để nhổ cỏ. Deadline đã được khóa.' : (repeatDaily ? `Đã tạo công việc lặp hằng ngày trong cột ${locLabel}.` : `Đã tạo công việc trong cột ${locLabel}.`));
+  toast(meta?.type === 'mistakeOnePct'
+    ? 'Đã tạo việc 1% để nhổ cỏ. Deadline đã được khóa.'
+    : (repeatDaily
+      ? `Đã tạo công việc lặp ${repeatScheduleLabel(repeatDays)} trong cột ${locLabel}.`
+      : `Đã tạo công việc trong cột ${locLabel}.`));
   setTimeout(() => {
     const card = document.querySelector(`.act-card[data-id="${act.id}"]`);
     if(card) card.scrollIntoView({behavior:'smooth', block:'center'});
@@ -5084,7 +5398,7 @@ document.getElementById('resetBtn').addEventListener('click', () => {
 function renderDataSummary(){
   document.getElementById('dataSummary').innerHTML =
     `Hiện có: <b>${state.activities.length}</b> hoạt động · <b>${state.reviews.length}</b> review ·
-     <b>${state.activities.filter(a=>a.tag1pct).length}</b> việc cải thiện 1% · <b>${state.recurringTasks.filter(t=>t && t.active !== false).length}</b> lịch lặp hằng ngày · <b>${state.mistakes.length}</b> cỏ dại ·
+     <b>${state.activities.filter(a=>a.tag1pct).length}</b> việc cải thiện 1% · <b>${state.recurringTasks.filter(t=>t && t.active !== false).length}</b> lịch lặp theo tuần · <b>${state.mistakes.length}</b> cỏ dại ·
      <b>${state.weekly.length}</b> tổng kết tuần.`;
 }
 
