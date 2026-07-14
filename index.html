@@ -1642,6 +1642,106 @@ input[type="time"]::-webkit-calendar-picker-indicator:hover{opacity:1;}
 @media (max-width:760px){.activity-board-meta-grid{grid-template-columns:1fr 1fr;}}
 @media (max-width:520px){.activity-board-meta-grid{grid-template-columns:1fr;}}
 
+
+
+/* ============ MOBILE REFINEMENT · DATE BAR / DAYPARTS / BOARD ============ */
+@media (max-width:520px){
+  /* Stable one-line date navigator. Keep the compact Today shortcut in a fixed slot. */
+  .plan-day-nav{
+    display:grid!important;
+    grid-template-columns:32px minmax(0,1fr) 32px 40px!important;
+    gap:5px!important;width:100%!important;align-items:center!important;
+  }
+  .plan-day-arrow{width:32px!important;height:34px!important;font-size:20px!important;border-radius:10px!important}
+  .plan-date-picker{min-width:0!important;width:100%!important;height:34px!important;padding:0 7px!important;border-radius:10px!important}
+  .plan-date-full{display:none!important}
+  .plan-date-compact{display:inline!important}
+  .plan-date-main{font-size:11px!important;text-align:center!important}
+  .plan-date-icon{display:none!important}
+  .plan-today-btn{
+    display:grid!important;place-items:center!important;
+    width:40px!important;min-width:40px!important;height:34px!important;
+    padding:0!important;border-radius:10px!important;font-size:10px!important;
+  }
+  .plan-today-full{display:none!important}
+  .plan-today-compact{display:inline!important}
+  .plan-today-btn.is-today{visibility:hidden!important;pointer-events:none!important}
+
+  /* Prevent the two time lines in each daypart from visually touching. */
+  .hero-budget .daypart-row{min-height:42px!important;padding:6px 7px!important}
+  .hero-budget .daypart-value{gap:3px!important;line-height:1!important;min-width:58px}
+  .hero-budget .daypart-value b{line-height:1!important}
+  .hero-budget .daypart-value small{display:block!important;line-height:1!important;min-height:9px!important}
+  .hero-budget .daypart-value small::after{display:block!important;line-height:1.15!important}
+
+  /* Activity board: compact two-column metadata instead of tall full-width rows. */
+  #activityBoardModal .modal{
+    padding:16px 14px calc(18px + env(safe-area-inset-bottom))!important;
+  }
+  #activityBoardModal .spread{margin-bottom:10px!important;align-items:flex-start!important}
+  #activityBoardModal .m-sub{margin-bottom:0!important;font-size:11.5px!important;line-height:1.4!important}
+  #activityBoardModal .f-group{margin-bottom:10px!important}
+  #activityBoardModal #bTitle{height:40px!important}
+  #activityBoardModal #bDesc{min-height:68px!important;max-height:120px!important}
+  #activityBoardModal .activity-board-meta-grid{
+    display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:8px!important;margin:6px 0 12px!important;
+  }
+  #activityBoardModal .activity-board-meta-grid .f-group{
+    display:block!important;margin:0!important;min-width:0!important;
+  }
+  #activityBoardModal .activity-board-meta-grid label{
+    display:block!important;margin:0 0 4px!important;font-size:10.5px!important;
+  }
+  #activityBoardModal .activity-board-meta-grid input,
+  #activityBoardModal .activity-board-meta-grid select{
+    width:100%!important;height:36px!important;padding:6px 8px!important;
+    border-radius:10px!important;font-size:11.5px!important;text-align:left!important;
+  }
+
+  /* Subtask list becomes a tidy two-row card: data above, icon actions below. */
+  #activityBoardModal .board-sub-list{padding:5px!important;border-radius:12px!important}
+  #activityBoardModal .board-sub-item{
+    display:grid!important;
+    grid-template-columns:22px 40px 40px minmax(0,1fr) auto!important;
+    align-items:center!important;gap:5px 6px!important;padding:8px 5px!important;
+  }
+  #activityBoardModal .board-sub-item input[type="checkbox"]{grid-column:1;grid-row:1;width:20px!important;height:20px!important}
+  #activityBoardModal .board-sub-item .bdate{grid-column:2;grid-row:1;font-size:10px!important;min-width:0!important}
+  #activityBoardModal .board-sub-item .bst{grid-column:3;grid-row:1;font-size:10px!important;min-width:0!important}
+  #activityBoardModal .board-sub-item .btitle{grid-column:4;grid-row:1;font-size:12px!important;line-height:1.25!important}
+  #activityBoardModal .board-sub-item .bdur{grid-column:5;grid-row:1;font-size:10px!important;white-space:nowrap!important}
+  #activityBoardModal .board-sub-actions{
+    grid-column:2/-1!important;grid-row:2!important;
+    justify-content:flex-end!important;gap:4px!important;margin-top:2px!important;
+  }
+  #activityBoardModal .board-sub-item button{
+    width:30px!important;min-width:30px!important;height:28px!important;padding:0!important;border-radius:8px!important;
+  }
+
+  /* Add-subtask controls use compact rows: title, date/time, duration, action. */
+  #activityBoardModal .board-sub-add{
+    display:grid!important;grid-template-columns:1fr 1fr!important;gap:6px!important;
+  }
+  #activityBoardModal .board-sub-add input,
+  #activityBoardModal .board-sub-add select{
+    min-width:0!important;width:100%!important;height:36px!important;
+    padding:6px 8px!important;font-size:11.5px!important;border-radius:10px!important;
+  }
+  #activityBoardModal #bSubTitle{grid-column:1/-1!important}
+  #activityBoardModal #bSubDuration{grid-column:1/-1!important}
+  #activityBoardModal #bSubDurationCustom{grid-column:1/-1!important;width:100%!important;max-width:none!important}
+  #activityBoardModal #bAddSub{grid-column:1/-1!important;height:36px!important;justify-content:center!important}
+  #activityBoardModal #boardForm > .row:last-child{margin-top:12px!important;align-items:center!important}
+}
+
+@media (max-width:380px){
+  .plan-day-nav{grid-template-columns:30px minmax(0,1fr) 30px 36px!important;gap:4px!important}
+  .plan-day-arrow{width:30px!important}
+  .plan-today-btn{width:36px!important;min-width:36px!important}
+  #activityBoardModal .board-sub-item{grid-template-columns:22px 37px 37px minmax(0,1fr) auto!important;gap:4px!important}
+}
+
 </style>
 </head>
 <body>
@@ -2009,7 +2109,7 @@ input[type="time"]::-webkit-calendar-picker-indicator:hover{opacity:1;}
       </div>
       <div class="card">
         <h3 style="font-size:15px;margin-bottom:8px">☁️ Đồng bộ đám mây (Firebase)</h3>
-        <p class="hint" style="margin-bottom:12px"><b>Đồng bộ tức thì:</b> mỗi thao tác làm thay đổi dữ liệu sẽ được gửi lên Firebase ngay, không chờ và không gộp thao tác. Nếu thiết bị khác vừa sửa, app sẽ <b>tạm dừng tự đẩy và báo bạn Tải về trước</b> để tránh ghi đè mất dữ liệu.</p>
+        <p class="hint" style="margin-bottom:12px"><b>Đồng bộ realtime hai chiều:</b> mỗi thao tác được gửi lên Firebase ngay và các thiết bị khác tự nhận dữ liệu mới, không cần bấm Tải về máy. Nút tải thủ công chỉ dùng để khôi phục khi cần.</p>
         <div class="row" style="gap:12px">
           <button class="btn btn-primary" id="syncUpBtn">☁️ Đồng bộ ngay</button>
           <button class="btn btn-ghost" id="syncDownBtn">⬇️ Tải về máy</button>
@@ -4147,18 +4247,20 @@ function timerPiPStyles(){
       width:100%;height:100%;overflow:hidden;
       background:transparent!important;
     }
+    [hidden]{display:none!important}
     body{
       font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
       color:#fff;padding:4px;display:flex;align-items:center;justify-content:center;
     }
     .pip-card{
-      width:max-content;max-width:100%;min-width:0;
-      display:flex;align-items:center;justify-content:center;gap:5px;
-      padding:6px 7px;border-radius:13px;
+      width:max-content;max-width:calc(100vw - 8px);min-width:0;
+      display:flex;align-items:center;justify-content:center;gap:4px;
+      padding:5px 6px;border-radius:12px;
       background:${dark ? 'rgba(15,36,25,.76)' : 'rgba(10,31,60,.72)'};
       border:1px solid rgba(255,255,255,.16);
       box-shadow:0 6px 18px rgba(0,0,0,.26);
       backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+      overflow:hidden;
     }
     .pip-count{
       min-width:68px;padding:0 3px;text-align:center;
@@ -4167,20 +4269,21 @@ function timerPiPStyles(){
     }
     .pip-count.over{color:#FFD08A}
     .pip-alert{
-      min-width:82px;padding:0 3px;text-align:center;
-      font-size:14px;font-weight:850;line-height:1;
+      min-width:0;padding:0 4px;text-align:center;
+      font-size:12.5px;font-weight:850;line-height:1;
       color:#FFD08A;white-space:nowrap;
     }
-    .pip-actions{display:flex;align-items:center;gap:4px}
+    .pip-actions{display:flex;align-items:center;gap:3px;flex:0 0 auto}
     .pip-finish-actions button.primary{
       background:#78D08B;color:#082016;border-color:#78D08B;
     }
     button{
-      width:29px;height:29px;padding:0;
+      width:27px;height:27px;padding:0;
       display:grid;place-items:center;
       border:1px solid rgba(255,255,255,.18);
       background:rgba(255,255,255,.08);color:#fff;
-      border-radius:9px;font:800 13px/1 inherit;cursor:pointer;
+      border-radius:8px;font:800 12px/1 inherit;cursor:pointer;
+      flex:0 0 auto;
     }
     button:hover{background:rgba(255,255,255,.18)}
     button.primary{background:rgba(255,255,255,.92);color:#143522;border-color:rgba(255,255,255,.92)}
@@ -4267,7 +4370,7 @@ async function openGlobalTimerPiP(){
   }
   if(!supportsGlobalTimerPiP()) return false;
   try{
-    const pip = await window.documentPictureInPicture.requestWindow({width:190,height:64});
+    const pip = await window.documentPictureInPicture.requestWindow({width:210,height:64});
     timerPiPWindow = pip;
     timerPinned = true;
     timerPinMode = 'pip';
@@ -6015,7 +6118,7 @@ syncTimerToolButtons();
    Bước 2: Đổi SYNC_ID thành một chuỗi bí mật của riêng bạn
    ===================================================== */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
 // ⬇️⬇️⬇️ DÁN CONFIG CỦA BẠN VÀO ĐÂY (lấy từ Firebase Console) ⬇️⬇️⬇️
 const firebaseConfig = {
@@ -6057,33 +6160,64 @@ if(!DEVICE_ID){ DEVICE_ID = Math.random().toString(36).slice(2,10); localStorage
 // stamp của bản trên mây mà thiết bị này đã "biết" (đã đẩy lên hoặc đã tải về).
 // Dùng để phát hiện: mây có mới hơn không (tức máy khác vừa sửa).
 let knownStamp = Number(localStorage.getItem('opos_known_stamp') || 0);
-function setKnownStamp(s){ knownStamp = s; localStorage.setItem('opos_known_stamp', String(s)); }
+function setKnownStamp(s){
+  knownStamp = Number(s) || 0;
+  localStorage.setItem('opos_known_stamp', String(knownStamp));
+}
 
-let conflictPending = false; // đang có xung đột chờ người dùng xử lý -> ngừng auto-push
 let realtimePushChain = Promise.resolve();
 let realtimePushPending = 0;
 let realtimePushSequence = 0;
+let applyingCloudState = false;
+let remoteRefreshQueued = false;
+const liveRef = db ? ref(db, 'sync/' + SYNC_ID) : null;
 
-// ---- Ghi từng thay đổi lên mây ngay lập tức, theo đúng thứ tự phát sinh ----
-async function pushSnapshot(snapshot, sequence){
-  if(!db || conflictPending) return false;
+function localStateSnapshot(){ return JSON.stringify(state); }
 
-  // Đọc trước để tránh ghi đè một bản mới hơn từ thiết bị khác.
-  const snap = await get(ref(db, 'sync/' + SYNC_ID));
-  if(snap.exists()){
-    const cloud = snap.val();
-    const cloudStamp = cloud.stamp || 0;
-    if(cloudStamp > knownStamp && cloud.origin !== DEVICE_ID){
-      conflictPending = true;
-      const when = cloud.updatedAt ? new Date(cloud.updatedAt).toLocaleString('vi-VN') : '';
-      setStatus('⚠️ Có thay đổi từ thiết bị khác (' + when + '). Bấm "Tải về máy" trước khi tiếp tục để tránh mất dữ liệu.');
-      toast('⚠️ Thiết bị khác vừa cập nhật. Hãy Tải về máy trước.');
-      return false;
-    }
+function applyCloudState(cloud, {announce=true}={}){
+  if(!cloud || !cloud.state) return false;
+  const cloudStamp = Number(cloud.stamp) || 0;
+  const currentSnapshot = localStateSnapshot();
+
+  // The local state already matches this exact cloud payload.
+  if(cloud.state === currentSnapshot){
+    if(cloudStamp >= knownStamp) setKnownStamp(cloudStamp);
+    return false;
   }
 
-  const stamp = Date.now();
-  await set(ref(db, 'sync/' + SYNC_ID), {
+  // Do not roll back to a genuinely older cloud version.
+  if(cloudStamp && cloudStamp < knownStamp) return false;
+
+  try{
+    const data = JSON.parse(cloud.state);
+    const localTheme = state.theme;
+    applyingCloudState = true;
+    state = Object.assign(defaultState(), data, {seeded:true, theme:localTheme});
+    if(typeof migrateActivities === 'function') migrateActivities();
+    if(typeof ensureRecurringTasksForDate === 'function') ensureRecurringTasksForDate(todayStr(), false);
+    localStorage.setItem(LS_KEY, JSON.stringify(state)); // no save hook -> no echo write
+    setKnownStamp(cloudStamp || Date.now());
+    applyTheme();
+    renderAll();
+    applyingCloudState = false;
+
+    const when = cloud.updatedAt ? new Date(cloud.updatedAt).toLocaleTimeString('vi-VN') : new Date().toLocaleTimeString('vi-VN');
+    setStatus('🟢 Đã nhận dữ liệu realtime lúc ' + when);
+    if(announce && document.visibilityState === 'visible') toast('Đã cập nhật dữ liệu từ thiết bị khác.');
+    return true;
+  }catch(e){
+    applyingCloudState = false;
+    setStatus('❌ Không đọc được dữ liệu realtime: ' + e.message);
+    return false;
+  }
+}
+
+// Each save() creates its own Firebase write immediately. Writes are serialized
+// only to preserve action order; there is no debounce or three-second delay.
+async function pushSnapshot(snapshot, sequence){
+  if(!db || !liveRef || applyingCloudState) return false;
+  const stamp = Math.max(Date.now(), knownStamp + 1);
+  await set(liveRef, {
     state: snapshot,
     updatedAt: new Date().toISOString(),
     stamp,
@@ -6096,45 +6230,39 @@ async function pushSnapshot(snapshot, sequence){
 }
 
 function pushImmediately(){
-  if(!db || conflictPending) return;
-
-  // Chụp trạng thái ngay tại thời điểm action xảy ra.
-  // Không dùng state toàn cục ở thời điểm mạng hoàn tất để tránh gộp mất action.
-  const snapshot = JSON.stringify(state);
+  if(!db || !liveRef || applyingCloudState) return;
+  const snapshot = localStateSnapshot();
   const sequence = ++realtimePushSequence;
   realtimePushPending += 1;
-  setStatus(`🔄 Đang đồng bộ thay đổi #${sequence}…`);
+  setStatus(`🔄 Đang gửi thay đổi #${sequence}…`);
 
   realtimePushChain = realtimePushChain
     .then(() => pushSnapshot(snapshot, sequence))
     .then(ok => {
-      if(ok) setStatus('✅ Đã đồng bộ tức thì lúc ' + new Date().toLocaleTimeString('vi-VN'));
+      if(ok) setStatus('🟢 Đã đồng bộ realtime lúc ' + new Date().toLocaleTimeString('vi-VN'));
     })
-    .catch(e => {
-      setStatus('❌ Lỗi đồng bộ tức thì: ' + e.message);
-    })
+    .catch(e => setStatus('❌ Lỗi đồng bộ realtime: ' + e.message))
     .finally(() => {
       realtimePushPending = Math.max(0, realtimePushPending - 1);
-      if(realtimePushPending > 0 && !conflictPending){
-        setStatus(`🔄 Đang đồng bộ ${realtimePushPending} thay đổi còn lại…`);
+      if(realtimePushPending > 0){
+        setStatus(`🔄 Đang gửi ${realtimePushPending} thay đổi còn lại…`);
       }
     });
 }
 
-// Mỗi lần save() là một lần ghi Firebase riêng, không debounce.
 if(window.__setAfterSave){ window.__setAfterSave(pushImmediately); }
 
-// ---- Nút "Đồng bộ ngay" (đẩy thủ công tức thì) ----
+// Manual overwrite remains available as a recovery action.
 document.getElementById('syncUpBtn').addEventListener('click', async () => {
-  if (!requireConfig()) return;
-  conflictPending = false; // người dùng chủ động đẩy -> chấp nhận ghi đè
+  if(!requireConfig()) return;
   setStatus('Đang đẩy lên mây…');
   try{
-    const stamp = Date.now();
-    await set(ref(db, 'sync/' + SYNC_ID), {
-      state: JSON.stringify(state),
+    const stamp = Math.max(Date.now(), knownStamp + 1);
+    await set(liveRef, {
+      state: localStateSnapshot(),
       updatedAt: new Date().toISOString(),
-      stamp, origin: DEVICE_ID, device: navigator.platform || 'unknown'
+      stamp, origin:DEVICE_ID, device:navigator.platform || 'unknown',
+      sequence:++realtimePushSequence
     });
     setKnownStamp(stamp);
     setStatus('✅ Đã đẩy lên mây lúc ' + new Date().toLocaleTimeString('vi-VN'));
@@ -6145,55 +6273,66 @@ document.getElementById('syncUpBtn').addEventListener('click', async () => {
   }
 });
 
-// ---- Nút "Tải về máy" (thủ công) ----
+// Manual download is retained, but normal cross-device updates no longer need it.
 document.getElementById('syncDownBtn').addEventListener('click', async () => {
-  if (!requireConfig()) return;
+  if(!requireConfig()) return;
   setStatus('Đang tải về…');
-  try {
-    const snap = await get(ref(db, 'sync/' + SYNC_ID));
-    if (!snap.exists()) {
+  try{
+    const snap = await get(liveRef);
+    if(!snap.exists()){
       setStatus('Chưa có dữ liệu trên mây.');
       toast('Chưa có dữ liệu trên mây.');
       return;
     }
     const cloud = snap.val();
-    const when = new Date(cloud.updatedAt).toLocaleString('vi-VN');
-    if (!confirm('Dữ liệu trên mây cập nhật lúc:\n' + when +
-      '\n\nTải về sẽ THAY THẾ toàn bộ dữ liệu trên máy này. Tiếp tục?')) {
+    const when = cloud.updatedAt ? new Date(cloud.updatedAt).toLocaleString('vi-VN') : '';
+    if(!confirm('Dữ liệu trên mây cập nhật lúc:\n' + when + '\n\nTải về sẽ thay thế toàn bộ dữ liệu trên máy này. Tiếp tục?')){
       setStatus('Đã huỷ tải về.');
       return;
     }
-    const data = JSON.parse(cloud.state);
-    const theme = state.theme;
-    state = Object.assign(defaultState(), data, { seeded:true, theme });
-    if (typeof migrateActivities === 'function') migrateActivities();
-    if (typeof ensureRecurringTasksForDate === 'function') ensureRecurringTasksForDate(todayStr(), false);
-    localStorage.setItem(LS_KEY, JSON.stringify(state)); // lưu thẳng, không kích hoạt auto-push
-    applyTheme(); renderAll();
-    setKnownStamp(cloud.stamp || 0);
-    conflictPending = false; // đã đồng bộ với mây -> hết xung đột
+    applyCloudState(cloud, {announce:false});
     setStatus('✅ Đã tải dữ liệu về (bản trên mây lúc ' + when + ')');
     toast('Đã tải dữ liệu từ mây về máy.');
-  } catch (e) {
+  }catch(e){
     setStatus('❌ Lỗi khi tải về: ' + e.message);
     toast('Lỗi đồng bộ. Kiểm tra mạng hoặc Rules trên Firebase.');
   }
 });
 
-// Khi mở app: đồng bộ mốc knownStamp với mây (nếu mây mới hơn thì báo để tải về)
-if(db){
-  setStatus('⚡ Đồng bộ tức thì đang bật');
-  get(ref(db, 'sync/' + SYNC_ID)).then(snap => {
-    if(snap.exists()){
-      const cloud = snap.val();
-      const cloudStamp = cloud.stamp || 0;
-      if(cloudStamp > knownStamp && cloud.origin !== DEVICE_ID){
-        conflictPending = true;
-        const when = cloud.updatedAt ? new Date(cloud.updatedAt).toLocaleString('vi-VN') : '';
-        setStatus('⚠️ Mây có bản mới hơn (' + when + '). Bấm "Tải về máy" để cập nhật.');
-      }
+// True realtime pull: every browser/device subscribes to the same Firebase path.
+// Foreign writes are applied automatically, including while the user is on mobile.
+if(db && liveRef){
+  setStatus('🟢 Đồng bộ realtime hai chiều đang bật');
+  onValue(liveRef, snap => {
+    if(!snap.exists()) return;
+    const cloud = snap.val();
+    const cloudStamp = Number(cloud.stamp) || 0;
+
+    // Own acknowledgement: update the known revision without re-rendering.
+    if(cloud.origin === DEVICE_ID && cloud.state === localStateSnapshot()){
+      if(cloudStamp >= knownStamp) setKnownStamp(cloudStamp);
+      return;
     }
-  }).catch(()=>{});
+
+    // If local writes are still in flight, re-read once the queue settles so the
+    // device applies the final cloud version rather than an intermediate event.
+    if(realtimePushPending > 0){
+      if(remoteRefreshQueued) return;
+      remoteRefreshQueued = true;
+      realtimePushChain.finally(async () => {
+        remoteRefreshQueued = false;
+        try{
+          const latest = await get(liveRef);
+          if(latest.exists()) applyCloudState(latest.val());
+        }catch(e){ setStatus('❌ Lỗi nhận dữ liệu realtime: ' + e.message); }
+      });
+      return;
+    }
+
+    applyCloudState(cloud);
+  }, error => {
+    setStatus('❌ Mất kết nối realtime: ' + error.message);
+  });
 }
 </script>
 </body>
